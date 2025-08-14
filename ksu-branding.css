@@ -1,0 +1,240 @@
+/**
+ * Kennesaw State University Office of Research
+ * Official Brand Colors and Styles
+ * 
+ * Usage: Include this CSS file in your research applications
+ * to maintain consistent KSU branding.
+ */
+
+:root {
+    /* Primary KSU Colors */
+    --ksu-gold: #FDBB30;           /* KSU Gold - Primary accent */
+    --ksu-black: #231F20;          /* KSU Black - Primary text/backgrounds */
+    
+    /* Secondary Colors */
+    --ksu-gray: #54585A;           /* Medium Gray - Secondary text */
+    --ksu-light-gray: #F4F4F4;    /* Light Gray - Backgrounds */
+    --ksu-white: #FFFFFF;          /* White - Clean backgrounds */
+    
+    /* Extended Palette for Research Applications */
+    --ksu-dark-gold: #D49A00;      /* Darker gold for hover states */
+    --ksu-light-gold: #FFD966;     /* Lighter gold for highlights */
+    --ksu-blue: #003366;           /* Deep blue for links/accents */
+    --ksu-green: #5CB85C;          /* Success/positive indicators */
+    --ksu-red: #D9534F;            /* Error/warning indicators */
+    
+    /* Typography */
+    --ksu-font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    --ksu-font-mono: 'Courier New', Courier, monospace;
+    
+    /* Spacing */
+    --ksu-spacing-xs: 0.25rem;
+    --ksu-spacing-sm: 0.5rem;
+    --ksu-spacing-md: 1rem;
+    --ksu-spacing-lg: 2rem;
+    --ksu-spacing-xl: 4rem;
+    
+    /* Border Radius */
+    --ksu-radius-sm: 4px;
+    --ksu-radius-md: 8px;
+    --ksu-radius-lg: 12px;
+    
+    /* Shadows */
+    --ksu-shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+    --ksu-shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+    --ksu-shadow-lg: 0 8px 30px rgba(0,0,0,0.15);
+}
+
+/* KSU Typography Styles */
+.ksu-heading-primary {
+    font-family: var(--ksu-font-primary);
+    color: var(--ksu-black);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.ksu-heading-secondary {
+    font-family: var(--ksu-font-primary);
+    color: var(--ksu-gray);
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.ksu-text {
+    font-family: var(--ksu-font-primary);
+    color: var(--ksu-gray);
+    line-height: 1.6;
+}
+
+/* KSU Button Styles */
+.ksu-button {
+    font-family: var(--ksu-font-primary);
+    padding: var(--ksu-spacing-sm) var(--ksu-spacing-lg);
+    border-radius: var(--ksu-radius-md);
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.ksu-button-primary {
+    background: var(--ksu-gold);
+    color: var(--ksu-black);
+}
+
+.ksu-button-primary:hover {
+    background: var(--ksu-dark-gold);
+    transform: translateY(-2px);
+    box-shadow: var(--ksu-shadow-md);
+}
+
+.ksu-button-secondary {
+    background: var(--ksu-black);
+    color: var(--ksu-white);
+}
+
+.ksu-button-secondary:hover {
+    background: var(--ksu-gray);
+    transform: translateY(-2px);
+    box-shadow: var(--ksu-shadow-md);
+}
+
+/* KSU Card Component */
+.ksu-card {
+    background: var(--ksu-white);
+    border-radius: var(--ksu-radius-lg);
+    padding: var(--ksu-spacing-lg);
+    box-shadow: var(--ksu-shadow-md);
+    border-top: 4px solid var(--ksu-gold);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ksu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--ksu-shadow-lg);
+}
+
+/* KSU Header Styles */
+.ksu-header {
+    background: var(--ksu-black);
+    color: var(--ksu-white);
+    padding: var(--ksu-spacing-md) 0;
+    box-shadow: var(--ksu-shadow-md);
+}
+
+.ksu-header-gold {
+    background: var(--ksu-gold);
+    color: var(--ksu-black);
+}
+
+/* KSU Footer Styles */
+.ksu-footer {
+    background: var(--ksu-black);
+    color: var(--ksu-white);
+    padding: var(--ksu-spacing-xl) var(--ksu-spacing-lg);
+    text-align: center;
+}
+
+.ksu-footer a {
+    color: var(--ksu-gold);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.ksu-footer a:hover {
+    color: var(--ksu-white);
+}
+
+/* KSU Badge/Label Styles */
+.ksu-badge {
+    display: inline-block;
+    padding: var(--ksu-spacing-xs) var(--ksu-spacing-sm);
+    border-radius: var(--ksu-radius-sm);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.ksu-badge-gold {
+    background: var(--ksu-gold);
+    color: var(--ksu-black);
+}
+
+.ksu-badge-black {
+    background: var(--ksu-black);
+    color: var(--ksu-white);
+}
+
+/* KSU Alert Styles */
+.ksu-alert {
+    padding: var(--ksu-spacing-md);
+    border-radius: var(--ksu-radius-md);
+    margin-bottom: var(--ksu-spacing-md);
+    border-left: 4px solid;
+}
+
+.ksu-alert-info {
+    background: var(--ksu-light-gray);
+    border-left-color: var(--ksu-blue);
+    color: var(--ksu-black);
+}
+
+.ksu-alert-success {
+    background: #E8F5E9;
+    border-left-color: var(--ksu-green);
+    color: var(--ksu-black);
+}
+
+.ksu-alert-warning {
+    background: var(--ksu-light-gold);
+    border-left-color: var(--ksu-gold);
+    color: var(--ksu-black);
+}
+
+.ksu-alert-error {
+    background: #FFEBEE;
+    border-left-color: var(--ksu-red);
+    color: var(--ksu-black);
+}
+
+/* Utility Classes */
+.ksu-text-center { text-align: center; }
+.ksu-text-left { text-align: left; }
+.ksu-text-right { text-align: right; }
+
+.ksu-mt-sm { margin-top: var(--ksu-spacing-sm); }
+.ksu-mt-md { margin-top: var(--ksu-spacing-md); }
+.ksu-mt-lg { margin-top: var(--ksu-spacing-lg); }
+
+.ksu-mb-sm { margin-bottom: var(--ksu-spacing-sm); }
+.ksu-mb-md { margin-bottom: var(--ksu-spacing-md); }
+.ksu-mb-lg { margin-bottom: var(--ksu-spacing-lg); }
+
+.ksu-p-sm { padding: var(--ksu-spacing-sm); }
+.ksu-p-md { padding: var(--ksu-spacing-md); }
+.ksu-p-lg { padding: var(--ksu-spacing-lg); }
+
+/* Responsive Grid */
+.ksu-grid {
+    display: grid;
+    gap: var(--ksu-spacing-lg);
+}
+
+.ksu-grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.ksu-grid-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.ksu-grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+/* Media Queries for Mobile Responsiveness */
+@media (max-width: 768px) {
+    .ksu-grid-2,
+    .ksu-grid-3,
+    .ksu-grid-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    .ksu-header,
+    .ksu-footer {
+        padding: var(--ksu-spacing-md);
+    }
+}
