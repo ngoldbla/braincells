@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSU Office of Research - AI Data Workbench</title>
+    <title>🦉 Brain Cells - Intelligent Spreadsheet Automation</title>
+    <link rel="stylesheet" href="assets/branding/ksu-branding.css">
     <style>
         :root {
             --ksu-gold: #FDBB30;
@@ -301,61 +302,65 @@
     <header class="header">
         <div class="header-content">
             <div class="logo-section">
-                <svg class="ksu-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="200" height="80" fill="#231F20"/>
-                    <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#FDBB30" font-size="32" font-weight="bold">KSU</text>
-                </svg>
+                <div style="font-size: 48px; margin-right: 1rem;">🦉</div>
                 <div class="office-title">
                     <h1>Office of Research</h1>
                     <p>Kennesaw State University</p>
+                    <p style="font-size: 0.8rem; color: var(--ksu-gold); margin-top: 0.25rem;">Project Lead: Dylan Goldblatt</p>
                 </div>
             </div>
         </div>
     </header>
 
     <section class="hero">
-        <h2>AI Data Workbench</h2>
-        <p>Transform your research with our powerful AI-powered data laboratory, featuring local model deployment, intelligent data processing, and advanced web crawling capabilities.</p>
+        <h2>Brain Cells</h2>
+        <p><strong>Intelligent Spreadsheet Automation, Fully Local.</strong> Brain Cells combines the best open source projects – Hugging Face Sheets, Crawl4AI, and Ollama with open weights LLMs – turning every cell in your spreadsheet into an intelligent "brain cell" capable of understanding and transforming data.</p>
+        <div style="margin-top: 2rem;">
+            <p style="font-size: 1rem; color: var(--ksu-gold);">🎉 Compiled in celebration of the Fall 2025 semester kickoff at</p>
+            <a href="https://www.hatchbridge.com" target="_blank">
+                <img src="assets/branding/hatchbridge-logo.png" alt="HatchBridge Incubator" height="40" style="margin-top: 10px; filter: brightness(0) invert(1);">
+            </a>
+        </div>
     </section>
 
     <div class="container">
         <div class="services-grid">
             <div class="service-card">
-                <h3><span class="service-icon">📊</span> AI Sheets</h3>
-                <p>Low-code spreadsheet interface for data prompting, cleaning, and enrichment with any Large Language Model. Perfect for research data analysis and transformation.</p>
-                <a href="http://localhost:3000" class="service-url">Access AI Sheets →</a>
+                <h3><span class="service-icon">🦉</span> Hugging Face Sheets</h3>
+                <p>Open source spreadsheet interface where every cell becomes a "brain cell" – capable of AI-powered data prompting, cleaning, and enrichment. Transform your research data intelligently.</p>
+                <a href="http://localhost:3000" class="service-url">Access Hugging Face Sheets →</a>
             </div>
 
             <div class="service-card">
-                <h3><span class="service-icon">🤖</span> Ollama</h3>
-                <p>Run powerful AI models locally on your research workstation. Complete privacy and control over your data with no cloud dependencies.</p>
+                <h3><span class="service-icon">🦉</span> Ollama + Open Weights</h3>
+                <p>Run state-of-the-art open weights LLMs locally on your workstation. Complete privacy with models like Mistral, Phi, and GPT-OSS – your data never leaves your machine.</p>
                 <a href="http://localhost:11434" class="service-url">Ollama REST API →</a>
             </div>
 
             <div class="service-card">
-                <h3><span class="service-icon">🕷️</span> Crawl4AI</h3>
-                <p>Advanced web crawler and scraper optimized for RAG pipelines. Extract structured data from websites for your research projects.</p>
+                <h3><span class="service-icon">🦉</span> Crawl4AI</h3>
+                <p>Open source web crawler and scraper optimized for LLM data pipelines. Extract and structure web data to feed your intelligent spreadsheet cells.</p>
                 <a href="#" class="service-url">CLI Interface →</a>
             </div>
         </div>
 
         <div class="features">
-            <h2>Research-Ready Features</h2>
+            <h2>Why Brain Cells?</h2>
             <ul class="features-list">
-                <li><strong>Bring Your Own Keys:</strong> Integrate with Hugging Face, OpenAI, Anthropic, and other providers</li>
-                <li><strong>Model Flexibility:</strong> Choose from various model sizes to match your hardware capabilities</li>
-                <li><strong>No Compilation Required:</strong> Simple Docker deployment on Windows, macOS, and Linux</li>
-                <li><strong>Data Privacy:</strong> Run everything locally for sensitive research data</li>
-                <li><strong>Scalable Architecture:</strong> From laptop to high-performance workstation</li>
-                <li><strong>Research Collaboration:</strong> Share configurations and workflows with your team</li>
+                <li><strong>100% Open Source:</strong> Built entirely on open source projects and open weights models</li>
+                <li><strong>Intelligent Automation:</strong> Every spreadsheet cell becomes a "brain cell" with AI capabilities</li>
+                <li><strong>Complete Privacy:</strong> Run everything locally – your data never leaves your machine</li>
+                <li><strong>Flexible Integration:</strong> Use Hugging Face, OpenAI, Anthropic, or run completely offline</li>
+                <li><strong>Hardware Optimized:</strong> Choose open weights models that match your system capabilities</li>
+                <li><strong>Zero Configuration:</strong> Pre-configured Docker stack gets you running in minutes</li>
             </ul>
         </div>
 
         <div class="quick-start">
-            <h2>🚀 Quick Start for Researchers</h2>
-            <pre><code># 1. Clone the KSU Research repository
-git clone https://github.com/ksu-research/ai-data-workbench.git
-cd ai-data-workbench
+            <h2>🦉 Quick Start for Researchers</h2>
+            <pre><code># 1. Clone the Brain Cells repository
+git clone https://github.com/ngoldbla/braincells.git
+cd braincells
 
 # 2. Configure your environment
 cp .env.template .env
@@ -374,12 +379,18 @@ open http://localhost:3000</code></pre>
             <div class="footer-links">
                 <a href="https://research.kennesaw.edu">Office of Research</a>
                 <a href="https://www.kennesaw.edu">Kennesaw State University</a>
-                <a href="https://github.com/ksu-research">GitHub</a>
-                <a href="mailto:research@kennesaw.edu">Contact</a>
+                <a href="https://github.com/ngoldbla">GitHub</a>
+                <a href="mailto:ngoldbla@kennesaw.edu">Contact</a>
             </div>
             <div class="copyright">
                 © 2024 Kennesaw State University Office of Research. All rights reserved.<br>
-                AI Data Workbench is developed and maintained by the KSU Office of Research.
+                Brain Cells is developed and maintained by Dylan Goldblatt at the KSU Office of Research.<br>
+                <br>
+                <em>Proudly developed in partnership with</em><br>
+                <a href="https://www.hatchbridge.com" target="_blank">
+                    <img src="assets/branding/hatchbridge-logo.png" alt="HatchBridge Incubator" height="30" style="margin-top: 10px; filter: brightness(0) invert(1);">
+                </a><br>
+                <em>Fall 2025 Semester Kickoff Celebration</em>
             </div>
         </div>
     </footer>

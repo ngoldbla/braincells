@@ -1,10 +1,17 @@
 {
+  "project": {
+    "name": "Brain Cells",
+    "description": "Intelligent Spreadsheet Automation, Fully Local",
+    "tagline": "Turning every spreadsheet cell into a brain cell"
+  },
   "organization": {
     "name": "Kennesaw State University",
     "department": "Office of Research",
+    "projectLead": "Dylan Goldblatt",
+    "mascot": "🦉",
     "tagline": "Advancing Research Through AI Innovation",
     "website": "https://research.kennesaw.edu",
-    "email": "research@kennesaw.edu",
+    "email": "ngoldbla@kennesaw.edu",
     "logo": "https://www.kennesaw.edu/_resources/images/global/logo-large.png"
   },
   "colors": {
@@ -59,13 +66,13 @@
     "lg": "0 8px 30px rgba(0,0,0,0.15)"
   },
   "social": {
-    "github": "https://github.com/ksu-research",
+    "github": "https://github.com/ngoldbla",
     "twitter": "https://twitter.com/kennesawstate",
     "linkedin": "https://www.linkedin.com/school/kennesaw-state-university"
   },
   "citation": {
-    "bibtex": "@software{ksu_ai_workbench_2024,\n  title = {KSU AI Data Workbench},\n  author = {Kennesaw State University Office of Research},\n  year = {2024},\n  url = {https://github.com/ksu-research/ai-data-workbench}\n}",
-    "apa": "Kennesaw State University Office of Research. (2024). KSU AI Data Workbench [Computer software]. https://github.com/ksu-research/ai-data-workbench",
-    "mla": "Kennesaw State University Office of Research. KSU AI Data Workbench. 2024. Computer software. GitHub, https://github.com/ksu-research/ai-data-workbench"
+    "bibtex": "@software{brain_cells_2024,\n  title = {Brain Cells: Intelligent Spreadsheet Automation},\n  author = {Goldblatt, Dylan and Kennesaw State University Office of Research},\n  year = {2024},\n  url = {https://github.com/ngoldbla/braincells}\n}",
+    "apa": "Goldblatt, D. & Kennesaw State University Office of Research. (2024). Brain Cells: Intelligent Spreadsheet Automation [Computer software]. https://github.com/ngoldbla/braincells",
+    "mla": "Goldblatt, Dylan, and Kennesaw State University Office of Research. Brain Cells: Intelligent Spreadsheet Automation. 2024. Computer software. GitHub, https://github.com/ngoldbla/braincells"
   }
 }
