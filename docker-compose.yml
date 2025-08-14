@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    # Start the Ollama server, then automatically pull the model on first run
+    command: >
+      sh -c "ollama serve &\n      sleep 5 &&\n      ollama pull gpt-oss:20b &&\n      tail -f /dev/null"
+
+  crawl4ai:
+    image: unclecode/crawl4ai:latest
+    # Keep the container running so you can exec into it and use the CLI
+    command: tail -f /dev/null
+    tty: true
+    stdin_open: true
+
+  aisheets:
+    build:
+      context: ./aisheets
+    ports:
+      - "3000:3000"
+    depends_on:
+      - ollama
+    environment:
+      - PORT=3000
+      - HF_TOKEN=${HF_TOKEN}  # Set your Hugging Face access token
+      # Optional: bill to organization
+      #- ORG_BILLING=${ORG_BILLING}
+    restart: unless-stopped
+
+volumes:
+  ollama_data:
