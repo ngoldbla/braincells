@@ -14,7 +14,7 @@ WORKDIR /app
 # we'll create a custom spreadsheet interface
 
 # Copy package.json for the web app
-COPY package.json /app/package.json 2>/dev/null || true
+COPY package.json /app/package.json
 
 # Create a simple Brain Cells web interface
 RUN mkdir -p /app/public /app/src /app/config
