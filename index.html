@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KSU Office of Research - AI Data Workbench</title>
+    <style>
+        :root {
+            --ksu-gold: #FDBB30;
+            --ksu-black: #231F20;
+            --ksu-gray: #54585A;
+            --ksu-light-gray: #F4F4F4;
+            --ksu-white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--ksu-black);
+            background: linear-gradient(135deg, var(--ksu-light-gray) 0%, var(--ksu-white) 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--ksu-black);
+            color: var(--ksu-white);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .ksu-logo {
+            height: 60px;
+            width: auto;
+        }
+
+        .office-title {
+            border-left: 3px solid var(--ksu-gold);
+            padding-left: 2rem;
+        }
+
+        .office-title h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .office-title p {
+            font-size: 0.9rem;
+            color: var(--ksu-gold);
+            font-weight: 500;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--ksu-black) 0%, var(--ksu-gray) 100%);
+            color: var(--ksu-white);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--ksu-white) 0%, var(--ksu-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            color: var(--ksu-light-gray);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .service-card {
+            background: var(--ksu-white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 4px solid var(--ksu-gold);
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .service-card h3 {
+            color: var(--ksu-black);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .service-icon {
+            font-size: 2rem;
+        }
+
+        .service-card p {
+            color: var(--ksu-gray);
+            margin-bottom: 1rem;
+        }
+
+        .service-url {
+            color: var(--ksu-gold);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.3s ease;
+        }
+
+        .service-url:hover {
+            gap: 1rem;
+        }
+
+        .features {
+            background: var(--ksu-white);
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 4rem;
+        }
+
+        .features h2 {
+            color: var(--ksu-black);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .features h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--ksu-gold);
+        }
+
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .features-list li {
+            padding: 1rem;
+            background: var(--ksu-light-gray);
+            border-radius: 8px;
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .features-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 1rem;
+            color: var(--ksu-gold);
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .quick-start {
+            background: linear-gradient(135deg, var(--ksu-gold) 0%, #FFD700 100%);
+            border-radius: 12px;
+            padding: 3rem;
+            color: var(--ksu-black);
+        }
+
+        .quick-start h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-start pre {
+            background: var(--ksu-black);
+            color: var(--ksu-white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        .quick-start code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .footer {
+            background: var(--ksu-black);
+            color: var(--ksu-white);
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--ksu-gold);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--ksu-white);
+        }
+
+        .copyright {
+            color: var(--ksu-gray);
+            font-size: 0.9rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--ksu-gray);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo-section {
+                flex-direction: column;
+            }
+
+            .office-title {
+                border-left: none;
+                border-top: 3px solid var(--ksu-gold);
+                padding-left: 0;
+                padding-top: 1rem;
+                margin-top: 1rem;
+            }
+
+            .hero h2 {
+                font-size: 2rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <svg class="ksu-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="200" height="80" fill="#231F20"/>
+                    <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#FDBB30" font-size="32" font-weight="bold">KSU</text>
+                </svg>
+                <div class="office-title">
+                    <h1>Office of Research</h1>
+                    <p>Kennesaw State University</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h2>AI Data Workbench</h2>
+        <p>Transform your research with our powerful AI-powered data laboratory, featuring local model deployment, intelligent data processing, and advanced web crawling capabilities.</p>
+    </section>
+
+    <div class="container">
+        <div class="services-grid">
+            <div class="service-card">
+                <h3><span class="service-icon">📊</span> AI Sheets</h3>
+                <p>Low-code spreadsheet interface for data prompting, cleaning, and enrichment with any Large Language Model. Perfect for research data analysis and transformation.</p>
+                <a href="http://localhost:3000" class="service-url">Access AI Sheets →</a>
+            </div>
+
+            <div class="service-card">
+                <h3><span class="service-icon">🤖</span> Ollama</h3>
+                <p>Run powerful AI models locally on your research workstation. Complete privacy and control over your data with no cloud dependencies.</p>
+                <a href="http://localhost:11434" class="service-url">Ollama REST API →</a>
+            </div>
+
+            <div class="service-card">
+                <h3><span class="service-icon">🕷️</span> Crawl4AI</h3>
+                <p>Advanced web crawler and scraper optimized for RAG pipelines. Extract structured data from websites for your research projects.</p>
+                <a href="#" class="service-url">CLI Interface →</a>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2>Research-Ready Features</h2>
+            <ul class="features-list">
+                <li><strong>Bring Your Own Keys:</strong> Integrate with Hugging Face, OpenAI, Anthropic, and other providers</li>
+                <li><strong>Model Flexibility:</strong> Choose from various model sizes to match your hardware capabilities</li>
+                <li><strong>No Compilation Required:</strong> Simple Docker deployment on Windows, macOS, and Linux</li>
+                <li><strong>Data Privacy:</strong> Run everything locally for sensitive research data</li>
+                <li><strong>Scalable Architecture:</strong> From laptop to high-performance workstation</li>
+                <li><strong>Research Collaboration:</strong> Share configurations and workflows with your team</li>
+            </ul>
+        </div>
+
+        <div class="quick-start">
+            <h2>🚀 Quick Start for Researchers</h2>
+            <pre><code># 1. Clone the KSU Research repository
+git clone https://github.com/ksu-research/ai-data-workbench.git
+cd ai-data-workbench
+
+# 2. Configure your environment
+cp .env.template .env
+# Edit .env with your preferred editor
+
+# 3. Launch the workbench
+docker compose up -d
+
+# 4. Access the interface
+open http://localhost:3000</code></pre>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="https://research.kennesaw.edu">Office of Research</a>
+                <a href="https://www.kennesaw.edu">Kennesaw State University</a>
+                <a href="https://github.com/ksu-research">GitHub</a>
+                <a href="mailto:research@kennesaw.edu">Contact</a>
+            </div>
+            <div class="copyright">
+                © 2024 Kennesaw State University Office of Research. All rights reserved.<br>
+                AI Data Workbench is developed and maintained by the KSU Office of Research.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

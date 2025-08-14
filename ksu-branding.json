@@ -1,0 +1,71 @@
+{
+  "organization": {
+    "name": "Kennesaw State University",
+    "department": "Office of Research",
+    "tagline": "Advancing Research Through AI Innovation",
+    "website": "https://research.kennesaw.edu",
+    "email": "research@kennesaw.edu",
+    "logo": "https://www.kennesaw.edu/_resources/images/global/logo-large.png"
+  },
+  "colors": {
+    "primary": {
+      "gold": "#FDBB30",
+      "black": "#231F20"
+    },
+    "secondary": {
+      "gray": "#54585A",
+      "lightGray": "#F4F4F4",
+      "white": "#FFFFFF"
+    },
+    "extended": {
+      "darkGold": "#D49A00",
+      "lightGold": "#FFD966",
+      "blue": "#003366",
+      "green": "#5CB85C",
+      "red": "#D9534F"
+    }
+  },
+  "typography": {
+    "fonts": {
+      "primary": "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif",
+      "monospace": "'Courier New', Courier, monospace"
+    },
+    "sizes": {
+      "xs": "0.75rem",
+      "sm": "0.875rem",
+      "base": "1rem",
+      "lg": "1.125rem",
+      "xl": "1.25rem",
+      "2xl": "1.5rem",
+      "3xl": "2rem",
+      "4xl": "3rem"
+    }
+  },
+  "spacing": {
+    "xs": "0.25rem",
+    "sm": "0.5rem",
+    "md": "1rem",
+    "lg": "2rem",
+    "xl": "4rem"
+  },
+  "borderRadius": {
+    "sm": "4px",
+    "md": "8px",
+    "lg": "12px"
+  },
+  "shadows": {
+    "sm": "0 2px 4px rgba(0,0,0,0.1)",
+    "md": "0 4px 20px rgba(0,0,0,0.1)",
+    "lg": "0 8px 30px rgba(0,0,0,0.15)"
+  },
+  "social": {
+    "github": "https://github.com/ksu-research",
+    "twitter": "https://twitter.com/kennesawstate",
+    "linkedin": "https://www.linkedin.com/school/kennesaw-state-university"
+  },
+  "citation": {
+    "bibtex": "@software{ksu_ai_workbench_2024,\n  title = {KSU AI Data Workbench},\n  author = {Kennesaw State University Office of Research},\n  year = {2024},\n  url = {https://github.com/ksu-research/ai-data-workbench}\n}",
+    "apa": "Kennesaw State University Office of Research. (2024). KSU AI Data Workbench [Computer software]. https://github.com/ksu-research/ai-data-workbench",
+    "mla": "Kennesaw State University Office of Research. KSU AI Data Workbench. 2024. Computer software. GitHub, https://github.com/ksu-research/ai-data-workbench"
+  }
+}
