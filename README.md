@@ -1,50 +1,70 @@
-# 🦅 KSU Office of Research - AI Data Workbench
+# 🦉 Brain Cells - Intelligent Spreadsheet Automation
 
 <div align="center">
-  <img src="https://www.kennesaw.edu/_resources/images/global/logo-large.png" alt="Kennesaw State University" width="300">
   
+  **Kennesaw State University**  
   **Office of Research**
   
-  *Advancing Research Through AI Innovation*
+  *Advancing Research Through AI Innovation*  
+  *Project Lead: Dylan Goldblatt*
+  
+  <br>
+  
+  🎉 **Compiled in celebration of the Fall 2025 semester kickoff at**
+  
+  <a href="https://www.hatchbridge.com">
+    <img src="assets/branding/hatchbridge-logo.png" alt="HatchBridge Incubator" height="40" style="margin-top: 10px;">
+  </a>
 </div>
 
 ---
 
-## 🛠️ AI-Powered Research Infrastructure
+## 🧠 What is Brain Cells?
 
-A comprehensive Docker Compose stack developed by the **Kennesaw State University Office of Research** that transforms your research workstation into an **AI-powered data laboratory**.
+**Brain Cells** brings intelligent automation to the spreadsheet interface, fully locally. This starter kit combines the best open source and open weights projects into a unified platform:
+
+- **🤗 Hugging Face Sheets** - Open source spreadsheet interface for AI-powered data manipulation
+- **🕷️ Crawl4AI** - Advanced web scraping and data extraction
+- **🤖 Ollama** - Local LLM runtime for complete privacy
+- **🎯 Open Weights Models** - Run state-of-the-art models without cloud dependencies
+
+Developed by **Dylan Goldblatt** at the **Kennesaw State University Office of Research**, Brain Cells transforms your research workstation into an intelligent data processing hub – think of each cell in your spreadsheet as a "brain cell" capable of understanding and transforming data.
 
 ### 👥 Meet Our Elite Research Team
 
 <div align="center">
-  <img src="research-team.png" alt="KSU Research Team in Action" width="600">
+  <img src="assets/branding/research-team.png" alt="KSU Research Team in Action" width="400">
   
   *Our dedicated research team demonstrating proper collaborative debugging posture*
 </div>
 
 When your code works on the first try, this is how the entire Office of Research celebrates. Join us in advancing AI research with style!
 
-### 🎯 Core Services
+### 🎯 Open Source Components
 
 | Service  | What it does | Default URL |
 |----------|--------------|-------------|
-| **AI Sheets** | Low-code spreadsheet UI for prompting, cleaning & enriching data with any LLM | <http://localhost:3000> |
-| **Ollama**    | Local model runner – completely offline if you want | <http://localhost:11434> (REST) |
-| **Crawl4AI** | Fast website crawler/ scraper ready for RAG pipelines | CLI in the `crawl4ai` container |
+| **Hugging Face Sheets** | Open source spreadsheet UI for prompting, cleaning & enriching data with any LLM | <http://localhost:3000> |
+| **Ollama**    | Open source local model runner with open weights LLMs | <http://localhost:11434> (REST) |
+| **Crawl4AI** | Open source web crawler/scraper optimized for LLM data pipelines | CLI in the `crawl4ai` container |
+
+> 📝 **Attribution:** Brain Cells is a bundle created from the open source [Hugging Face AI Sheets](https://huggingface.co/spaces/HuggingFace/ai-sheets) project, enhanced with intelligent automation features and customized for research use.
 
 ---
 
-## ✨ Research-Ready Features
+## ✨ Why Brain Cells?
 
-* **🔑 Flexible API Integration** – Seamlessly works with Hugging Face, OpenAI, Anthropic, and other research-grade LLM providers
-* **🎯 Hardware-Optimized Models** – Select from our curated model collection tailored to your research workstation's capabilities
-* **🚀 Zero-Configuration Deployment** – Pre-configured Docker stack optimized for research environments on Windows/macOS/Linux
-* **🔒 Data Privacy First** – Complete offline capability for sensitive research data, ensuring FERPA and IRB compliance
-* **📊 Research Collaboration** – Share configurations and workflows with your research team
+* **🧠 Intelligent Cells** – Every spreadsheet cell becomes a "brain cell" capable of AI-powered transformations
+* **🌐 100% Open Source** – Built entirely on open source projects and open weights models
+* **🔒 Completely Local** – Your data never leaves your machine, ensuring complete privacy
+* **🔑 Flexible Integration** – Works with Hugging Face, OpenAI, Anthropic, or run entirely offline
+* **🎯 Hardware-Optimized** – Choose from various open weights models to match your hardware
+* **🚀 Zero-Configuration** – Pre-configured Docker stack gets you running in minutes
+* **📊 Research-Grade** – Trusted by KSU researchers for sensitive data processing
 
 ---
 
-## 🚀 Quick Start for KSU Researchers
+## 🦉 Quick Start for KSU Researchers
 
 > **Prerequisites for Research Workstations**
 > * Docker Desktop **v24+** (Windows/macOS) or Docker Engine (Linux)
@@ -53,15 +73,15 @@ When your code works on the first try, this is how the entire Office of Research
 > * Optional: NVIDIA GPU for accelerated inference
 
 ```bash
-# 1. Clone the KSU Research repository
- git clone https://github.com/ksu-research/ai-data-workbench.git
- cd ai-data-workbench
+# 1. Clone the Brain Cells repository
+ git clone https://github.com/ngoldbla/braincells.git
+ cd braincells
 
 # 2. Copy env template and edit values
  cp .env.template .env
  $EDITOR .env   # or open with VS Code / Notepad / TextEdit
 
-# 3. Fire it up 🚀
+# 3. Fire it up 🦉
  docker compose up -d
 
 # 4. Open your browser
@@ -79,7 +99,7 @@ Configure your research environment by creating a `.env` file (step 2 above). Th
 
 ```ini
 # === KSU Research Configuration ===
-# Contact research@kennesaw.edu for institutional tokens
+# Contact ngoldbla@kennesaw.edu for institutional tokens
 
 # === Mandatory ===
 HF_TOKEN=           # Institutional or personal token from https://huggingface.co/settings/tokens
@@ -114,7 +134,7 @@ Just leave `OLLAMA_MODEL` blank **and** supply one of:
 * `OPENAI_API_KEY` – uses OpenAI Chat Completions
 * `ANTHROPIC_API_KEY` – uses Claude models
 
-AI Sheets automatically picks the first available backend.
+Brain Cells automatically picks the first available backend for intelligent processing.
 
 ---
 
@@ -140,7 +160,7 @@ AI Sheets automatically picks the first available backend.
 
 ## 🛠️ Research Workflow Integration
 
-### AI Sheets for Data Analysis
+### Hugging Face Sheets for Intelligent Data Analysis
 
 1. Visit `http://localhost:3000`.
 2. Click **⚙ Settings → Keys** to paste additional API keys any time.
@@ -170,7 +190,7 @@ curl -s http://localhost:11434/api/generate -d '{"model":"gpt-oss:20b","prompt":
 
 * **Port Configuration** – Modify `docker-compose.yml` for lab network requirements
 * **Memory Optimization** – Select appropriate models based on available hardware resources
-* **Authentication Issues** – Contact research@kennesaw.edu for institutional token support
+* **Authentication Issues** – Contact ngoldbla@kennesaw.edu for institutional token support
 * **System Updates** – Run `docker compose pull && docker compose up -d` for latest research tools
 * **Technical Support** – KSU researchers can contact the Office of Research IT support team
 
@@ -180,31 +200,38 @@ curl -s http://localhost:11434/api/generate -d '{"model":"gpt-oss:20b","prompt":
 
 **MIT License** – Open for research collaboration and academic use
 
-Developed and maintained by the **Kennesaw State University Office of Research**
+Developed and maintained by **Dylan Goldblatt** at the **Kennesaw State University Office of Research**
 
 ### 🎓 Academic Citation
 
 If you use this workbench in your research, please cite:
 
 ```bibtex
-@software{ksu_ai_workbench_2024,
-  title = {KSU AI Data Workbench},
-  author = {Kennesaw State University Office of Research},
+@software{brain_cells_2024,
+  title = {Brain Cells: Intelligent Spreadsheet Automation},
+  author = {Goldblatt, Dylan and Kennesaw State University Office of Research},
   year = {2024},
-  url = {https://github.com/ksu-research/ai-data-workbench}
+  url = {https://github.com/ngoldbla/braincells}
 }
 ```
 
 ### 📧 Contact
 
+**Dylan Goldblatt**  
 **Office of Research**  
 Kennesaw State University  
-Email: research@kennesaw.edu  
+Email: ngoldbla@kennesaw.edu  
 Web: https://research.kennesaw.edu
 
 ---
 
 <div align="center">
   <strong>Advancing Research Through AI Innovation</strong><br>
-  Kennesaw State University • Office of Research
+  Kennesaw State University • Office of Research<br>
+  <br>
+  <em>Proudly developed in partnership with</em><br>
+  <a href="https://www.hatchbridge.com">
+    <img src="assets/branding/hatchbridge-logo.png" alt="HatchBridge Incubator" height="30" style="margin-top: 10px;">
+  </a><br>
+  <em>Fall 2025 Semester Kickoff Celebration</em>
 </div>

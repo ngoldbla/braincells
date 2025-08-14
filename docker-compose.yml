@@ -18,7 +18,7 @@ services:
     tty: true
     stdin_open: true
 
-  aisheets:
+  braincells:
     build:
       context: ./aisheets
     ports:
@@ -28,6 +28,8 @@ services:
     environment:
       - PORT=3000
       - HF_TOKEN=${HF_TOKEN}  # Set your Hugging Face access token
+      - APP_NAME=Brain Cells
+      - APP_LOGO=🦉
       # Optional: bill to organization
       #- ORG_BILLING=${ORG_BILLING}
     restart: unless-stopped
