@@ -21,17 +21,20 @@ services:
   braincells:
     build:
       context: ./aisheets
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     depends_on:
       - ollama
     environment:
       - PORT=3000
-      - HF_TOKEN=${HF_TOKEN}  # Set your Hugging Face access token
+      - HF_TOKEN=${HF_TOKEN:-}  # Optional: Hugging Face access token
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}  # Optional: OpenAI API key
       - APP_NAME=Brain Cells
       - APP_LOGO=🦉
-      # Optional: bill to organization
-      #- ORG_BILLING=${ORG_BILLING}
+      - OLLAMA_HOST=http://ollama:11434  # Connect to Ollama service
+    volumes:
+      - ./data:/app/data  # Mount local data directory
     restart: unless-stopped
 
 volumes:

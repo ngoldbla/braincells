@@ -66,6 +66,8 @@ When your code works on the first try, this is how the entire Office of Research
 
 ## 🦉 Quick Start for KSU Researchers
 
+> **📌 Important:** Brain Cells creates a custom spreadsheet interface inspired by Hugging Face AI Sheets, since the original is not available as a Docker image. Our implementation provides similar functionality with enhanced KSU branding and local-first architecture.
+
 > **Prerequisites for Research Workstations**
 > * Docker Desktop **v24+** (Windows/macOS) or Docker Engine (Linux)
 > * ~15 GB free disk space (for AI models)

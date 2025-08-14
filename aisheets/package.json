@@ -1,0 +1,31 @@
+{
+  "name": "brain-cells",
+  "version": "1.0.0",
+  "description": "Brain Cells - Intelligent Spreadsheet Automation",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server ./public -p 3000 -c-1",
+    "dev": "http-server ./public -p 3000 -c-1"
+  },
+  "keywords": [
+    "spreadsheet",
+    "ai",
+    "automation",
+    "brain-cells",
+    "ksu",
+    "research"
+  ],
+  "author": "Dylan Goldblatt <ngoldbla@kennesaw.edu>",
+  "license": "MIT",
+  "dependencies": {
+    "http-server": "^14.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngoldbla/braincells.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ngoldbla/braincells/issues"
+  },
+  "homepage": "https://github.com/ngoldbla/braincells"
+}
