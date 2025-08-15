@@ -91,23 +91,44 @@ if !errorlevel! neq 0 (
 echo [OK] Docker is working properly
 echo.
 
-REM Check disk space
+REM Check disk space (optional - skip if it fails)
 echo Checking disk space...
-for /f "tokens=3" %%a in ('dir /-c ^| findstr /c:"bytes free"') do set FREE_BYTES=%%a
-set /a FREE_GB=!FREE_BYTES:~0,-9! 2>nul
-if !FREE_GB! LSS 20 (
-    echo.
-    echo [WARNING] Less than 20GB free disk space detected.
-    echo           Brain Cells requires adequate space for Docker operations.
-    echo.
-    set /p CONTINUE=Do you want to continue anyway? (y/n): 
-    if /i not "!CONTINUE!"=="y" (
-        echo Installation cancelled.
-        pause
-        exit /b 1
+set FREE_GB=999
+for /f "tokens=3" %%a in ('dir /-c 2^>nul ^| findstr /c:"bytes free"') do set FREE_BYTES=%%a
+
+REM Only process if we got a value
+if defined FREE_BYTES (
+    REM Try to extract GB from bytes (remove last 9 digits)
+    set TEMP_GB=!FREE_BYTES:~0,-9!
+    REM Check if we got a valid number
+    if defined TEMP_GB (
+        set /a FREE_GB=!TEMP_GB! 2>nul
     )
 )
-echo [OK] Sufficient disk space available
+
+REM Only warn if we successfully calculated space and it's low
+if !FREE_GB! LSS 20 (
+    if !FREE_GB! NEQ 999 (
+        echo.
+        echo [WARNING] Less than 20GB free disk space detected.
+        echo           Brain Cells requires adequate space for Docker operations.
+        echo.
+        set /p CONTINUE=Do you want to continue anyway? (y/n): 
+        if /i not "!CONTINUE!"=="y" (
+            echo Installation cancelled.
+            pause
+            exit /b 1
+        )
+    ) else (
+        echo [INFO] Could not determine disk space, continuing...
+    )
+) else (
+    if !FREE_GB! NEQ 999 (
+        echo [OK] Sufficient disk space available: !FREE_GB!GB
+    ) else (
+        echo [INFO] Disk space check skipped
+    )
+)
 echo.
 
 REM Check for .env file
