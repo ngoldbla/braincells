@@ -1,0 +1,112 @@
+{
+  "name": "braincells-desktop",
+  "version": "1.0.0",
+  "description": "Brain Cells - AI-powered spreadsheet desktop application",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "npm run build:all",
+    "build:all": "npm run build:mac && npm run build:win",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win",
+    "postinstall": "electron-builder install-app-deps",
+    "dist": "electron-builder",
+    "pack": "electron-builder --dir"
+  },
+  "keywords": ["ai", "spreadsheet", "data", "analysis"],
+  "author": "Brain Cells Team",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
+    "electron-updater": "^6.1.7"
+  },
+  "dependencies": {
+    "axios": "^1.6.5",
+    "child_process": "^1.0.2",
+    "electron-store": "^8.1.0",
+    "extract-zip": "^2.0.1",
+    "node-fetch": "^3.3.2",
+    "portfinder": "^1.0.32",
+    "sqlite3": "^5.1.7",
+    "duckdb": "^0.10.0"
+  },
+  "build": {
+    "appId": "com.braincells.desktop",
+    "productName": "Brain Cells",
+    "directories": {
+      "output": "dist",
+      "buildResources": "resources"
+    },
+    "files": [
+      "src/**/*",
+      "resources/**/*",
+      "!**/*.ts",
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!**/node_modules/*.d.ts",
+      "!**/node_modules/.bin"
+    ],
+    "extraResources": [
+      {
+        "from": "../aisheets/dist",
+        "to": "app",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "resources/ollama",
+        "to": "ollama",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "resources/models",
+        "to": "models",
+        "filter": ["**/*"]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "resources/icons/icon.icns",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "resources/entitlements.mac.plist",
+      "entitlementsInherit": "resources/entitlements.mac.plist",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "zip",
+          "arch": ["x64", "arm64"]
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "resources/icons/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Brain Cells"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Office",
+      "icon": "resources/icons"
+    }
+  }
+}
