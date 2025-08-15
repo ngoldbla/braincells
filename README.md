@@ -44,30 +44,16 @@ cd braincells
 
 #### For Windows Users:
 
-**Option 1: Using Batch File (Simplest)**
 ```cmd
 # Clone the repository
 git clone https://github.com/ngoldbla/braincells.git
 cd braincells
 
-# Double-click start-windows.bat in File Explorer
-# OR run from Command Prompt:
+# Run the Windows setup script
 start-windows.bat
 ```
 
-**Option 2: Using PowerShell Directly**
-```powershell
-# Clone and start Brain Cells
-git clone https://github.com/ngoldbla/braincells.git
-cd braincells
-
-# Run the setup script
-powershell -ExecutionPolicy Bypass -File start.ps1
-
-# If you get permission errors, try running PowerShell as Administrator
-```
-
-**Option 3: Using WSL (Windows Subsystem for Linux)**
+**Alternative: Using WSL (Windows Subsystem for Linux)**
 ```bash
 # First, install WSL if not already installed:
 wsl --install
@@ -87,7 +73,7 @@ docker compose up -d
 
 > **First run:** Docker will download the required images and Ollama will pull the AI model (gpt-oss:20b). This may take 5-10 minutes depending on your internet connection.
 
-> **Windows Users:** If you encounter line ending issues with the bash script, the PowerShell script (start.ps1) or batch file (start-windows.bat) will work without any modifications.
+> **Windows Users:** Use the `start-windows.bat` script for the best experience - it handles all Windows-specific requirements automatically.
 
 ---
 
@@ -296,29 +282,19 @@ For production deployments, contact: support@braincells.ai
 
 ### Windows-Specific Issues
 
+#### Docker Desktop Not Starting
+- Ensure virtualization is enabled in BIOS
+- Restart Windows after Docker Desktop installation
+- Check that Hyper-V is enabled (Windows Pro/Enterprise)
+- For Windows Home, ensure WSL 2 backend is installed
+
 #### Line Ending Errors (CRLF vs LF)
-If you encounter errors like `'\r': command not found` when running bash scripts:
-
-**Solution 1: Use the Windows-specific scripts**
-```powershell
-# Use PowerShell script instead
-powershell -ExecutionPolicy Bypass -File start.ps1
-
-# Or use the batch file
+If you encounter errors with the bash script, use the Windows batch file instead:
+```cmd
 start-windows.bat
 ```
 
-**Solution 2: Fix line endings in Git**
-```bash
-# Configure Git to handle line endings correctly
-git config --global core.autocrlf input
-
-# Re-clone the repository
-rm -rf braincells
-git clone https://github.com/ngoldbla/braincells.git
-```
-
-**Solution 3: Use WSL (Windows Subsystem for Linux)**
+Or use WSL (Windows Subsystem for Linux):
 ```bash
 # Install WSL
 wsl --install
@@ -327,20 +303,6 @@ wsl --install
 wsl
 cd /mnt/c/path/to/braincells
 ./start.sh
-```
-
-#### Docker Desktop Not Starting
-- Ensure virtualization is enabled in BIOS
-- Restart Windows after Docker Desktop installation
-- Check that Hyper-V is enabled (Windows Pro/Enterprise)
-- For Windows Home, ensure WSL 2 backend is installed
-
-#### Permission Issues
-If you get permission denied errors:
-```powershell
-# Run PowerShell as Administrator
-# Then execute:
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
 ### General Issues
