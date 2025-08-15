@@ -185,10 +185,15 @@ This is the most common issue. Solutions:
    ```
    You need at least 20GB free space.
 
-3. **For Docker Desktop users**:
-   - Open Docker Desktop → Settings → Resources
-   - Increase "Disk image size" to at least 60GB
+3. **Increase Docker Desktop disk space**:
+   
+   **macOS/Windows:**
+   - Open Docker Desktop → Settings (gear icon)
+   - Go to Resources → Advanced
+   - Increase "Disk image size" to at least 80GB (recommended: 100GB+)
    - Click "Apply & Restart"
+   
+   **Note:** This creates more space for ALL Docker images/containers, not just Brain Cells
 
 4. **macOS specific**:
    - Docker Desktop creates a large disk image file
