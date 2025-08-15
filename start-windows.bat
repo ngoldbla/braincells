@@ -235,10 +235,15 @@ echo.
 echo NOTE: It may take 1-2 minutes for the service to be fully ready.
 echo       If the page doesn't load immediately, wait a moment and refresh.
 echo.
+echo IMPORTANT: For local AI (Ollama), you need to pull a model:
+echo    Run: docker exec braincells-ollama-1 ollama pull gpt-oss:20b
+echo    Or use the included script: pull-model.bat
+echo.
 echo Useful commands:
 echo    - View logs:        docker compose logs -f
 echo    - Stop Brain Cells: docker compose down
 echo    - Restart:          docker compose restart
+echo    - Pull Ollama model: pull-model.bat
 echo    - Clean up Docker:  docker system prune -a
 echo.
 echo Every Cell is a Brain Cell!

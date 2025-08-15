@@ -7,13 +7,17 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
-    # Start the Ollama server, then automatically pull the model on first run
-    entrypoint: ["/bin/sh", "-c"]
-    command: |
-      ollama serve &
-      sleep 5
-      ollama pull ${OLLAMA_MODEL:-gpt-oss:20b}
-      tail -f /dev/null
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    # Run ollama serve in the foreground - fixes restart loop
+    command: serve
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+      
   braincells:
     build:
       context: ./aisheets
@@ -33,6 +37,8 @@ services:
     volumes:
       - ./data:/app/data  # Mount local data directory
     restart: unless-stopped
+    depends_on:
+      - ollama
 
 volumes:
   ollama_data:
