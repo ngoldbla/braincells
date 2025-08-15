@@ -299,7 +299,6 @@
         <ul class="feature-list">
             <li>Connect to Ollama for local LLM processing</li>
             <li>Use Hugging Face models for AI operations</li>
-            <li>Extract web data with Crawl4AI integration</li>
             <li>Complete privacy - your data never leaves your machine</li>
         </ul>
         
@@ -346,9 +345,6 @@
             </select>
             
             <h3 style="margin-top: 2rem;">🕷️ Data Sources</h3>
-            <button class="tool-btn" style="width: 100%; margin-bottom: 0.5rem;" onclick="connectCrawl4AI()">
-                Connect Crawl4AI
-            </button>
             <button class="tool-btn" style="width: 100%;" onclick="importData()">
                 Import CSV/Excel
             </button>
@@ -426,14 +422,46 @@
                         currentCell = cell;
                     };
                     
-                    input.oninput = () => {
-                        // Simulate AI processing
+                    input.oninput = async () => {
+                        // Process =AI() formulas
                         if (input.value.startsWith('=AI(')) {
-                            cell.classList.add('processing');
-                            setTimeout(() => {
-                                cell.classList.remove('processing');
-                                indicator.style.opacity = '1';
-                            }, 1000);
+                            const match = input.value.match(/^=AI\(["'](.+?)["']\)/);
+                            if (match) {
+                                const prompt = match[1];
+                                cell.classList.add('processing');
+                                
+                                try {
+                                    const modelSelect = document.getElementById('ollamaModel');
+                                    const model = modelSelect ? modelSelect.value : 'gpt-oss:20b';
+                                    
+                                    const response = await fetch('http://localhost:11434/api/generate', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            model: model,
+                                            prompt: prompt,
+                                            stream: false
+                                        })
+                                    });
+                                    
+                                    if (response.ok) {
+                                        const data = await response.json();
+                                        if (data.response) {
+                                            input.value = data.response.trim();
+                                            indicator.style.opacity = '1';
+                                        }
+                                    } else {
+                                        input.value = 'Error: Ollama not available';
+                                    }
+                                } catch (error) {
+                                    console.error('Error calling Ollama:', error);
+                                    input.value = 'Error: Could not connect to Ollama';
+                                } finally {
+                                    cell.classList.remove('processing');
+                                }
+                            }
                         }
                     };
                     
@@ -458,15 +486,9 @@
             alert('Brain Cells Help\n\n' +
                   '• Use =AI("prompt") to run AI operations on cells\n' +
                   '• Connect to Ollama at http://localhost:11434\n' +
-                  '• Import data from CSV or use Crawl4AI for web data\n' +
+                  '• Import data from CSV\n' +
                   '• Each cell can process data intelligently\n\n' +
                   'For more help, email ngoldbla@kennesaw.edu');
-        }
-
-        function connectCrawl4AI() {
-            alert('Connecting to Crawl4AI container...\n\n' +
-                  'Run: docker exec -it crawl4ai bash\n' +
-                  'Then use: crwl <url> --output csv');
         }
 
         function importData() {
@@ -474,14 +496,54 @@
                   'For now, paste CSV data directly into cells.');
         }
 
-        function runPrompt() {
+        async function runPrompt() {
             const prompt = window.prompt('Enter your AI prompt for selected cells:');
-            if (prompt && currentCell) {
-                currentCell.classList.add('processing');
-                setTimeout(() => {
-                    currentCell.classList.remove('processing');
-                    alert('AI processing complete! (Demo mode)');
-                }, 1500);
+            if (!prompt || !currentCell) return;
+            
+            const input = currentCell.querySelector('input');
+            if (!input) return;
+            
+            currentCell.classList.add('processing');
+            
+            try {
+                // Get selected model
+                const modelSelect = document.getElementById('ollamaModel');
+                const model = modelSelect ? modelSelect.value : 'gpt-oss:20b';
+                
+                // Prepare context with cell value
+                const cellValue = input.value || '';
+                const fullPrompt = cellValue ? 
+                    `Context: ${cellValue}\n\nTask: ${prompt}` : 
+                    prompt;
+                
+                // Try to call Ollama API
+                const response = await fetch('http://localhost:11434/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        prompt: fullPrompt,
+                        stream: false
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.response) {
+                        input.value = data.response.trim();
+                        currentCell.querySelector('.brain-indicator').style.opacity = '1';
+                    }
+                } else {
+                    // Fallback to demo mode if Ollama is not available
+                    alert('Ollama not available. Make sure Docker containers are running.\n\nTo use AI features:\n1. Run: docker compose up -d\n2. Wait for Ollama to download models\n3. Refresh this page');
+                }
+            } catch (error) {
+                console.error('Error calling Ollama:', error);
+                alert('Could not connect to Ollama. Make sure:\n1. Docker containers are running (docker compose up -d)\n2. Ollama is accessible at http://localhost:11434\n3. The selected model is downloaded');
+            } finally {
+                currentCell.classList.remove('processing');
             }
         }
 
