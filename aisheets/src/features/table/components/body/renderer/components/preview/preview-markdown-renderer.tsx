@@ -20,9 +20,7 @@ const postprocess = (html: string) => {
 };
 
 marked.use(
-  markedKatex({
-    throwOnError: false,
-  }),
+  markedKatex({}),
 );
 
 marked.use(

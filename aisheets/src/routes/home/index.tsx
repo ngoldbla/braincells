@@ -9,7 +9,6 @@ import { server$, useNavigate } from '@builder.io/qwik-city';
 import { cn } from '@qwik-ui/utils';
 import { LuArrowUp, LuEgg, LuGlobe } from '@qwikest/icons/lucide';
 import { Button, Textarea } from '~/components';
-import { Login } from '~/components/ui/login/Login';
 import { MainLogo } from '~/components/ui/logo/logo';
 import { BigTips } from '~/components/ui/tips/big-tips';
 import { Tips } from '~/components/ui/tips/tips';
@@ -318,20 +317,8 @@ export default component$(() => {
                 sourced and verifiable.
               </li>
             </ul>
-            <p class="italic mt-4">
-              For questions and feedback, drop a message{' '}
-              <a
-                href="https://github.com/ngoldbla/braincells/discussions"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="underline"
-              >
-                here
-              </a>
-              .
-            </p>
           </BigTips>
-          {session.value.anonymous ? <Login /> : <Username />}
+          {!session.value.anonymous && <Username />}
         </div>
       </div>
       <div class="w-full flex flex-col items-center justify-center">
@@ -475,16 +462,13 @@ export default component$(() => {
       </div>
       <Tips id="home-tips">
         <p>
-          <b>Start with existing data:</b> Generating new content from
-          structured data helps improve accuracy. Import a file, then transform,
-          augment, or enrich its content to suit your use case.
+          Start with existing data: Generating new content from structured data
+          helps improve accuracy. Import a file, then transform, augment, or
+          enrich its content to suit your use case.
         </p>
+        <p>Write a good prompt: Be detailed about the topic and content you want.</p>
         <p>
-          <b>Write a good prompt:</b> Be detailed about the topic and content
-          you want.
-        </p>
-        <p>
-          <b>Activate "Search the web":</b> For deep research, fact-checking and
+          Activate "Search the web": For deep research, fact-checking and
           up-to-date info.
         </p>
       </Tips>

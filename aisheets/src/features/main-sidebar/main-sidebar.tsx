@@ -5,7 +5,6 @@ import { LuPanelLeft } from '@qwikest/icons/lucide';
 import { isToday } from 'date-fns';
 import { useModals } from '~/components/hooks';
 import { useClickOutside } from '~/components/hooks/click/outside';
-import { Login } from '~/components/ui/login/Login';
 import { MainLogo } from '~/components/ui/logo/logo';
 import { useAllDatasetsLoader, useSession } from '~/loaders';
 import { useDatasetsStore } from '~/state';
@@ -122,63 +121,46 @@ export const MainSidebar = component$(() => {
         </div>
       </div>
 
-      {session.value.anonymous ? (
-        <div class="w-[273px] h-fit p-[18px]">
-          <div class="w-full h-full p-4 rounded-md bg-neutral-200">
-            <div class="flex flex-col justify-center gap-3 text-sm">
-              <p class="font-medium">Log in with Hugging Face</p>
-
-              <p>
-                Access your datasets history and share what you're building on
-                the Hub — it’s free.
-              </p>
-
-              <Login />
+      <div class="flex-1 flex flex-col overflow-y-auto">
+        {todayDatasets.length > 0 && (
+          <div class="mt-8">
+            <p class="text-muted-foreground px-4 text-sm font-semibold mb-4">
+              Today
+            </p>
+            <div class="block space-y-3 px-4">
+              {todayDatasets.map((item) => (
+                <Link
+                  type="button"
+                  key={item.id}
+                  href={`/home/dataset/${item.id}`}
+                  class="block py-2 pl-3 hover:bg-gray-100 rounded text-sm font-light truncate max-w-full"
+                >
+                  {item.name}
+                </Link>
+              ))}
             </div>
           </div>
-        </div>
-      ) : (
-        <div class="flex-1 flex flex-col overflow-y-auto">
-          {todayDatasets.length > 0 && (
-            <div class="mt-8">
-              <p class="text-muted-foreground px-4 text-sm font-semibold mb-4">
-                Today
-              </p>
-              <div class="block space-y-3 px-4">
-                {todayDatasets.map((item) => (
-                  <Link
-                    type="button"
-                    key={item.id}
-                    href={`/home/dataset/${item.id}`}
-                    class="block py-2 pl-3 hover:bg-gray-100 rounded text-sm font-light truncate max-w-full"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
+        )}
+        {previousDatasets.length > 0 && (
+          <div class="mt-8">
+            <p class="text-muted-foreground px-4 text-sm font-semibold mb-4">
+              Previous
+            </p>
+            <div class="block space-y-3 px-4">
+              {previousDatasets.map((item) => (
+                <Link
+                  type="button"
+                  key={item.id}
+                  href={`/home/dataset/${item.id}`}
+                  class="block py-2 pl-3 hover:bg-gray-100 rounded text-sm font-light truncate max-w-full"
+                >
+                  {item.name}
+                </Link>
+              ))}
             </div>
-          )}
-          {previousDatasets.length > 0 && (
-            <div class="mt-8">
-              <p class="text-muted-foreground px-4 text-sm font-semibold mb-4">
-                Previous
-              </p>
-              <div class="block space-y-3 px-4">
-                {previousDatasets.map((item) => (
-                  <Link
-                    type="button"
-                    key={item.id}
-                    href={`/home/dataset/${item.id}`}
-                    class="block py-2 pl-3 hover:bg-gray-100 rounded text-sm font-light truncate max-w-full"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 });
