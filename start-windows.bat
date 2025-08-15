@@ -91,49 +91,13 @@ if !errorlevel! neq 0 (
 echo [OK] Docker is working properly
 echo.
 
-REM Check disk space (optional - skip if it fails)
-echo Checking disk space...
-set FREE_GB=999
-for /f "tokens=3" %%a in ('dir /-c 2^>nul ^| findstr /c:"bytes free"') do set FREE_BYTES=%%a
-
-REM Only process if we got a value
-if defined FREE_BYTES (
-    REM Try to extract GB from bytes (remove last 9 digits)
-    set TEMP_GB=!FREE_BYTES:~0,-9!
-    REM Check if we got a valid number
-    if defined TEMP_GB (
-        set /a FREE_GB=!TEMP_GB! 2>nul
-    )
-)
-
-REM Only warn if we successfully calculated space and it's low
-if !FREE_GB! LSS 20 (
-    if !FREE_GB! NEQ 999 (
-        echo.
-        echo [WARNING] Less than 20GB free disk space detected.
-        echo           Brain Cells requires adequate space for Docker operations.
-        echo.
-        set /p CONTINUE=Do you want to continue anyway? (y/n): 
-        if /i not "!CONTINUE!"=="y" (
-            echo Installation cancelled.
-            pause
-            exit /b 1
-        )
-    ) else (
-        echo [INFO] Could not determine disk space, continuing...
-    )
-) else (
-    if !FREE_GB! NEQ 999 (
-        echo [OK] Sufficient disk space available: !FREE_GB!GB
-    ) else (
-        echo [INFO] Disk space check skipped
-    )
-)
+REM Skip disk space check - causes issues on some systems
+echo [INFO] Disk space requirements: ~20GB for Docker images
 echo.
 
 REM Check for .env file
 if not exist .env (
-    echo Creating configuration file...
+    echo No .env file found. Let's set up your configuration...
     
     if exist .env.template (
         copy .env.template .env >nul
@@ -145,18 +109,53 @@ if not exist .env (
     
     echo.
     echo ===============================================================
-    echo OPTIONAL: Hugging Face Token
-    echo.
-    echo For the best AI experience, you can add a Hugging Face token.
-    echo Get your free token at: https://huggingface.co/settings/tokens
-    echo.
-    echo You can add it to the .env file later by editing it and adding:
-    echo    HF_TOKEN=your_token_here
+    echo RECOMMENDED: Add your Hugging Face Token
     echo ===============================================================
+    echo.
+    echo Hugging Face provides access to thousands of AI models.
+    echo Adding a token enables the best AI experience.
+    echo.
+    echo To get your free token:
+    echo    1. Visit: https://huggingface.co/settings/tokens
+    echo    2. Sign up or log in (it's free!)
+    echo    3. Click "New token" - Name it "Brain Cells" - Create
+    echo.
+    
+    REM Prompt for Hugging Face token
+    set "HF_TOKEN="
+    set /p "HF_TOKEN=Enter your Hugging Face token (or press Enter to skip): "
+    
+    REM Check if user entered a token
+    if defined HF_TOKEN (
+        if not "!HF_TOKEN!"=="" (
+            echo HF_TOKEN=!HF_TOKEN!>> .env
+            echo.
+            echo [OK] Hugging Face token added to .env
+        ) else (
+            echo.
+            echo [INFO] Skipping Hugging Face token (you can add it later)
+        )
+    ) else (
+        echo.
+        echo [INFO] Skipping Hugging Face token (you can add it later)
+    )
     echo.
 ) else (
     echo [OK] Using existing .env file
-    echo.
+    
+    REM Check if HF_TOKEN already exists in .env
+    findstr /C:"HF_TOKEN=" .env >nul 2>&1
+    if !errorlevel! neq 0 (
+        echo.
+        echo ===============================================================
+        echo OPTIONAL: Add Hugging Face Token
+        echo ===============================================================
+        echo.
+        echo No Hugging Face token found in .env file.
+        echo To add one later, edit .env and add: HF_TOKEN=your_token_here
+        echo Get your free token at: https://huggingface.co/settings/tokens
+        echo.
+    )
 )
 
 REM Docker cleanup option
@@ -167,8 +166,13 @@ echo.
 echo Docker Desktop uses a virtual disk that can fill up over time.
 echo Cleaning Docker can free up significant space.
 echo.
-set /p CLEAN=Would you like to clean Docker cache before starting? (y/n): 
-if /i "!CLEAN!"=="y" (
+
+REM Initialize CLEAN variable to avoid comparison errors
+set "CLEAN=n"
+set /p "CLEAN=Would you like to clean Docker cache before starting? (y/n): "
+
+REM Check if user wants to clean (handle empty input)
+if /i "!CLEAN:~0,1!"=="y" (
     echo.
     echo Cleaning Docker system (this may take a minute)...
     echo    - Removing stopped containers
@@ -182,6 +186,8 @@ if /i "!CLEAN!"=="y" (
     ) else (
         echo [OK] Docker cleanup complete!
     )
+) else (
+    echo [INFO] Skipping Docker cleanup
 )
 echo.
 
