@@ -8,15 +8,12 @@ services:
     volumes:
       - ollama_data:/root/.ollama
     # Start the Ollama server, then automatically pull the model on first run
-    command: >
-      sh -c "ollama serve &\n      sleep 5 &&\n      ollama pull gpt-oss:20b &&\n      tail -f /dev/null"
-
-  crawl4ai:
-    image: unclecode/crawl4ai:latest
-    # Keep the container running so you can exec into it and use the CLI
-    command: tail -f /dev/null
-    tty: true
-    stdin_open: true
+    entrypoint: ["/bin/sh", "-c"]
+    command: |
+      ollama serve &
+      sleep 5
+      ollama pull gpt-oss:20b
+      tail -f /dev/null
 
   braincells:
     build:

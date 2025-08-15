@@ -24,7 +24,6 @@
 **Brain Cells** brings intelligent automation to the spreadsheet interface, fully locally. This starter kit combines the best open source and open weights projects into a unified platform:
 
 - **🤗 Hugging Face Sheets** - Open source spreadsheet interface for AI-powered data manipulation
-- **🕷️ Crawl4AI** - Advanced web scraping and data extraction
 - **🤖 Ollama** - Local LLM runtime for complete privacy
 - **🎯 Open Weights Models** - Run state-of-the-art models without cloud dependencies
 
@@ -46,7 +45,6 @@ When your code works on the first try, this is how the entire Office of Research
 |----------|--------------|-------------|
 | **Hugging Face Sheets** | Open source spreadsheet UI for prompting, cleaning & enriching data with any LLM | <http://localhost:3000> |
 | **Ollama**    | Open source local model runner with open weights LLMs | <http://localhost:11434> (REST) |
-| **Crawl4AI** | Open source web crawler/scraper optimized for LLM data pipelines | CLI in the `crawl4ai` container |
 
 > 📝 **Attribution:** Brain Cells is a bundle created from the open source [Hugging Face AI Sheets](https://huggingface.co/spaces/HuggingFace/ai-sheets) project, enhanced with intelligent automation features and customized for research use.
 
@@ -167,18 +165,6 @@ Brain Cells automatically picks the first available backend for intelligent proc
 1. Visit `http://localhost:3000`.
 2. Click **⚙ Settings → Keys** to paste additional API keys any time.
 3. Create or upload a CSV, then type a prompt in a new column, hit **▶ Run**.
-
-### Crawl4AI for Web Data Collection
-
-Open a shell in the container:
-
-```bash
-docker compose exec crawl4ai bash
-# example crawl
-crwl https://docs.python.org --deep-crawl bfs --max-pages 20 --output markdown
-```
-
-Results appear under `./data` inside the container (mount volumes if you need persistence).
 
 ### Direct Model API Access for Custom Research Applications
 

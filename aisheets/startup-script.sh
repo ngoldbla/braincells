@@ -141,7 +141,7 @@ if [ ! -f /app/index.html ] && [ ! -f /app/public/index.html ]; then
         </div>
         <div class="main-content">
             <h2>Welcome to Brain Cells</h2>
-            <p><strong>Brain Cells</strong> is a comprehensive bundle that includes the open source Hugging Face AI Sheets application, enhanced with Ollama for local LLM processing and Crawl4AI for web data extraction.</p>
+            <p><strong>Brain Cells</strong> is a comprehensive bundle that includes the open source Hugging Face AI Sheets application, enhanced with Ollama for local LLM processing.</p>
             <p>Transform your data with AI-powered spreadsheet automation. Each cell becomes intelligent, capable of understanding and transforming your data - all running locally for complete privacy.</p>
             <p>For questions and feedback: <a href="mailto:ngoldbla@kennesaw.edu?subject=Feedback%20on%20Brain%20Cells" style="color: #231F20;">ngoldbla@kennesaw.edu</a></p>
             <p style="margin-top: 2rem; font-style: italic;">Loading application...</p>
