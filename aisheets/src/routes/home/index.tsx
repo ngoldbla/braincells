@@ -214,9 +214,9 @@ export default component$(() => {
 
         <div class="flex items-center gap-2">
           <BigTips>
-            <h1 class="font-semibold text-xl">What is Sheets?</h1>
+            <h1 class="font-semibold text-xl">About Brain Cells</h1>
             <p>
-              Sheets is a tool to build and transform structured tables using AI
+              Brain Cells is a tool to build and transform structured tables using AI
               and web search. You can build tables from scratch or augment your
               own spreadsheets by:
             </p>
@@ -228,7 +228,7 @@ export default component$(() => {
               <li>Using different open models</li>
               <li>Editing individual cells</li>
             </ul>
-            <h1 class="font-semibold text-xl">How can Sheets help you?</h1>
+            <h1 class="font-semibold text-xl">How can Brain Cells help you?</h1>
             <ul class="space-y-3">
               <li>
                 <b>Enrich Datasets with AI and the Web:</b> Automatically
@@ -303,7 +303,7 @@ export default component$(() => {
               </li>
               <li>
                 <b>Hundreds of models</b> Powered by Hugging Face Inference
-                Providers, Sheets provides access to the latest models and the
+                Providers, Brain Cells provides access to the latest models and the
                 fastest inference providers.
               </li>
               <li>
