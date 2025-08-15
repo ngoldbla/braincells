@@ -25,45 +25,81 @@ fi
 echo "✅ Docker is installed and running"
 echo ""
 
-# Check available disk space
+# Check Docker disk usage and system space
 echo "📊 Checking disk space..."
-AVAILABLE_SPACE=$(df -h . | awk 'NR==2 {print $4}')
-echo "   Available space: $AVAILABLE_SPACE"
 
-# Try to extract numeric value for comparison
+# Check Docker's disk usage
+DOCKER_USAGE=$(docker system df 2>/dev/null | grep "Images" | awk '{print $2}' | sed 's/GB//')
+DOCKER_RECLAIMABLE=$(docker system df 2>/dev/null | grep "Images" | awk '{print $4}')
+if [ ! -z "$DOCKER_USAGE" ]; then
+    echo "   Docker images using: ${DOCKER_USAGE}GB (${DOCKER_RECLAIMABLE} reclaimable)"
+fi
+
+# Check available system disk space
+AVAILABLE_SPACE=$(df -h . | awk 'NR==2 {print $4}')
+echo "   System available space: $AVAILABLE_SPACE"
+
+# For Docker Desktop, provide specific guidance
+if [[ "$OSTYPE" == "darwin"* ]] || [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]]; then
+    # Check if Docker Desktop is installed
+    if docker info 2>/dev/null | grep -q "Operating System"; then
+        echo ""
+        echo "💡 Docker Desktop detected"
+        
+        # Check if there's very little reclaimable space but still getting errors
+        DOCKER_TOTAL=$(docker system df 2>/dev/null | tail -1 | awk '{print $4}')
+        
+        echo ""
+        echo "📝 Note: Docker Desktop has its own disk limit (separate from your system disk)."
+        echo "   If you encounter 'no space left on device' errors during build:"
+        echo ""
+        echo "   1. Open Docker Desktop"
+        echo "   2. Go to Settings → Resources → Advanced"
+        echo "   3. Increase 'Disk image size' to 80-100GB"
+        echo "   4. Click 'Apply & Restart'"
+        echo ""
+        echo "🧹 First, let's try to free up any existing Docker space:"
+        read -p "Would you like to clean Docker cache before starting? (y/n): " -n 1 -r
+        echo ""
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo "🧹 Cleaning Docker system (this may take a minute)..."
+            
+            # Show what will be deleted
+            echo "   Removing:"
+            echo "   • All stopped containers"
+            echo "   • All unused networks"
+            echo "   • All dangling images"
+            echo "   • All build cache"
+            
+            # Perform cleanup
+            docker system prune -a --volumes -f
+            
+            # Show results
+            DOCKER_USAGE_AFTER=$(docker system df 2>/dev/null | grep "Images" | awk '{print $2}' | sed 's/GB//')
+            echo ""
+            echo "✅ Docker cleanup complete!"
+            echo "   Docker images now using: ${DOCKER_USAGE_AFTER}GB"
+        fi
+    fi
+fi
+
+# Try to extract numeric value for system disk check
 SPACE_NUM=$(echo "$AVAILABLE_SPACE" | sed 's/[^0-9.]//g' | cut -d. -f1)
 SPACE_UNIT=$(echo "$AVAILABLE_SPACE" | sed 's/[0-9.]//g')
 
 if [[ "$SPACE_UNIT" == "G" ]] || [[ "$SPACE_UNIT" == "Gi" ]]; then
     if [[ "$SPACE_NUM" -lt 20 ]] 2>/dev/null; then
         echo ""
-        echo "⚠️  WARNING: Low disk space detected!"
-        echo "   Brain Cells requires at least 20GB of free space."
+        echo "⚠️  WARNING: Low system disk space detected!"
+        echo "   Your system has less than 20GB free."
+        echo "   Brain Cells requires adequate space for Docker operations."
         echo ""
-        echo "   🧹 To free up Docker space, you can run:"
-        echo "      docker system prune -a --volumes"
+        echo "   Recommended: Free up system space or increase Docker Desktop's disk allocation."
         echo ""
-        echo "   This will remove:"
-        echo "   • All stopped containers"
-        echo "   • All unused images"
-        echo "   • All unused volumes"
-        echo ""
-        read -p "Would you like to clean Docker now? (y/n): " -n 1 -r
-        echo ""
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            echo "🧹 Cleaning Docker system..."
-            docker system prune -a --volumes -f
-            echo "✅ Docker cleanup complete"
-            echo ""
-            # Re-check space
-            AVAILABLE_SPACE=$(df -h . | awk 'NR==2 {print $4}')
-            echo "   New available space: $AVAILABLE_SPACE"
-        fi
-        echo ""
-        read -p "Do you want to continue with the installation? (y/n): " -n 1 -r
+        read -p "Do you want to continue anyway? (y/n): " -n 1 -r
         echo ""
         if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            echo "Installation cancelled. Please free up disk space and try again."
+            echo "Please free up disk space and try again."
             exit 1
         fi
     fi
@@ -117,10 +153,7 @@ echo "   • Install dependencies"
 echo ""
 
 # Start the services with build output
-docker compose up -d --build
-
-# Check if the build was successful
-if [ $? -eq 0 ]; then
+if docker compose up -d --build 2>&1 | tee /tmp/brain-cells-install.log; then
     echo ""
     echo "============================================================"
     echo "✨ Brain Cells is starting up!"
@@ -140,19 +173,39 @@ if [ $? -eq 0 ]; then
     echo "============================================================"
 else
     echo ""
-    echo "❌ Installation failed. Common issues:"
+    echo "❌ Installation failed!"
     echo ""
-    echo "1. 💾 Not enough disk space:"
-    echo "   • Run: docker system prune -a --volumes"
-    echo "   • Free up at least 20GB of space"
-    echo ""
-    echo "2. 🔧 Docker Desktop settings:"
-    echo "   • Increase disk image size in Docker Desktop preferences"
-    echo "   • Restart Docker Desktop"
-    echo ""
-    echo "3. 📝 Check the logs:"
-    echo "   • Run: docker compose logs"
-    echo ""
+    
+    # Check if it was a space issue
+    if grep -q "no space left on device" /tmp/brain-cells-install.log; then
+        echo "🚨 The build failed due to lack of disk space."
+        echo ""
+        echo "This is usually a Docker Desktop disk limit issue, NOT your system disk."
+        echo ""
+        echo "✅ TO FIX THIS:"
+        echo ""
+        echo "1. Open Docker Desktop"
+        echo "2. Go to Settings → Resources → Advanced"
+        echo "3. Increase 'Disk image size' from 60GB to 100GB (or more)"
+        echo "4. Click 'Apply & Restart'"
+        echo "5. Run ./start.sh again"
+        echo ""
+        echo "📝 Why this happens:"
+        echo "   Docker Desktop uses a virtual disk with a default 60GB limit."
+        echo "   Brain Cells needs ~20GB for images and build artifacts."
+        echo "   Other Docker projects on your system share this same limit."
+        echo ""
+    else
+        echo "📝 Check the error above for details."
+        echo ""
+        echo "Common issues:"
+        echo "1. Not enough Docker disk space (see instructions above)"
+        echo "2. Network issues downloading dependencies"
+        echo "3. Port 3000 already in use"
+        echo ""
+    fi
+    
+    echo "For detailed logs, check: /tmp/brain-cells-install.log"
     echo "For more help, visit: https://github.com/ngoldbla/braincells/issues"
     exit 1
 fi
