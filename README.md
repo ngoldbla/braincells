@@ -44,22 +44,27 @@ cd braincells
 
 #### For Windows Users:
 
-**Option 1: Using PowerShell (Recommended)**
-```powershell
-# Clone and start Brain Cells
-git clone https://github.com/ngoldbla/braincells.git
-cd braincells
-powershell -ExecutionPolicy Bypass -File start.ps1
-```
-
-**Option 2: Using Batch File**
+**Option 1: Using Batch File (Simplest)**
 ```cmd
 # Clone the repository
 git clone https://github.com/ngoldbla/braincells.git
 cd braincells
 
-# Double-click start-windows.bat or run:
+# Double-click start-windows.bat in File Explorer
+# OR run from Command Prompt:
 start-windows.bat
+```
+
+**Option 2: Using PowerShell Directly**
+```powershell
+# Clone and start Brain Cells
+git clone https://github.com/ngoldbla/braincells.git
+cd braincells
+
+# Run the setup script
+powershell -ExecutionPolicy Bypass -File start.ps1
+
+# If you get permission errors, try running PowerShell as Administrator
 ```
 
 **Option 3: Using WSL (Windows Subsystem for Linux)**
