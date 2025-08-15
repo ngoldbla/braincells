@@ -12,8 +12,9 @@ echo ===============================================================
 echo.
 
 REM Check if Docker is installed
+echo Checking Docker installation...
 docker --version >nul 2>&1
-if errorlevel 1 (
+if !errorlevel! neq 0 (
     echo [ERROR] Docker is not installed or not in PATH.
     echo.
     echo Please install Docker Desktop first:
@@ -28,24 +29,66 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo [OK] Docker is installed
+for /f "tokens=*" %%i in ('docker --version 2^>^&1') do set DOCKER_VERSION=%%i
+echo [OK] Docker is installed: !DOCKER_VERSION!
 echo.
 
-REM Check if Docker is running
+REM Check if Docker daemon is running
+echo Checking if Docker Desktop is running...
 docker info >nul 2>&1
-if errorlevel 1 (
-    echo [ERROR] Docker is not running.
+if !errorlevel! neq 0 (
     echo.
-    echo Please:
-    echo    1. Start Docker Desktop
-    echo    2. Wait for it to fully start (about 30 seconds)
-    echo    3. Run this script again
+    echo ===============================================================
+    echo [ERROR] Docker Desktop is not running!
+    echo ===============================================================
+    echo.
+    echo Please start Docker Desktop:
+    echo.
+    echo    1. Open Docker Desktop from your Start Menu or Desktop
+    echo    2. Wait for the whale icon in the system tray to stop animating
+    echo    3. The Docker Desktop window should show "Docker Desktop is running"
+    echo    4. This usually takes 30-60 seconds
+    echo    5. Once Docker is running, run this script again
+    echo.
+    echo If Docker Desktop won't start:
+    echo    - Make sure virtualization is enabled in your BIOS
+    echo    - On Windows Home: Ensure WSL 2 is installed
+    echo    - On Windows Pro/Enterprise: Ensure Hyper-V is enabled
+    echo    - Try restarting your computer
     echo.
     pause
     exit /b 1
 )
 
-echo [OK] Docker is running
+echo [OK] Docker Desktop is running
+echo.
+
+REM Test Docker with a simple command
+echo Testing Docker functionality...
+docker run --rm hello-world >nul 2>&1
+if !errorlevel! neq 0 (
+    echo.
+    echo [WARNING] Docker test failed. Docker may not be fully initialized.
+    echo           Waiting 10 seconds for Docker to fully start...
+    timeout /t 10 /nobreak >nul
+    
+    REM Try again
+    docker run --rm hello-world >nul 2>&1
+    if !errorlevel! neq 0 (
+        echo.
+        echo [ERROR] Docker is not working properly.
+        echo.
+        echo Please try:
+        echo    1. Restart Docker Desktop
+        echo    2. Check Docker Desktop settings
+        echo    3. Restart your computer
+        echo.
+        pause
+        exit /b 1
+    )
+)
+
+echo [OK] Docker is working properly
 echo.
 
 REM Check disk space
@@ -64,11 +107,12 @@ if !FREE_GB! LSS 20 (
         exit /b 1
     )
 )
+echo [OK] Sufficient disk space available
 echo.
 
 REM Check for .env file
 if not exist .env (
-    echo No .env file found. Creating one...
+    echo Creating configuration file...
     
     if exist .env.template (
         copy .env.template .env >nul
@@ -96,7 +140,7 @@ if not exist .env (
 
 REM Docker cleanup option
 echo ===============================================================
-echo Docker Maintenance
+echo Docker Maintenance (Optional)
 echo ===============================================================
 echo.
 echo Docker Desktop uses a virtual disk that can fill up over time.
@@ -112,8 +156,11 @@ if /i "!CLEAN!"=="y" (
     echo    - Removing build cache
     echo.
     docker system prune -a --volumes -f
-    echo.
-    echo [OK] Docker cleanup complete!
+    if !errorlevel! neq 0 (
+        echo [WARNING] Docker cleanup had some issues but continuing...
+    ) else (
+        echo [OK] Docker cleanup complete!
+    )
 )
 echo.
 
@@ -127,12 +174,28 @@ echo    - Build the Docker image
 echo    - Download AI models
 echo    - Install dependencies
 echo.
-echo Starting services...
+echo Starting services with docker compose...
 echo.
+
+REM Check if docker-compose.yml exists
+if not exist docker-compose.yml (
+    echo [ERROR] docker-compose.yml not found!
+    echo.
+    echo Make sure you are running this script from the braincells directory.
+    echo Current directory: %CD%
+    echo.
+    echo Expected files:
+    echo    - docker-compose.yml
+    echo    - start-windows.bat
+    echo    - .env (or .env.template)
+    echo.
+    pause
+    exit /b 1
+)
 
 docker compose up -d --build
 
-if errorlevel 1 (
+if !errorlevel! neq 0 (
     echo.
     echo ===============================================================
     echo [ERROR] Installation failed!
@@ -155,6 +218,10 @@ if errorlevel 1 (
     echo    - Check your internet connection
     echo    - Check if you're behind a corporate proxy
     echo.
+    echo 4. Permission issues:
+    echo    - Make sure Docker Desktop is running with proper permissions
+    echo    - Try running this script as Administrator
+    echo.
     echo For more help: https://github.com/ngoldbla/braincells/issues
     echo.
     pause
@@ -168,8 +235,8 @@ echo ===============================================================
 echo.
 echo Access Brain Cells at: http://localhost:3000
 echo.
-echo It may take a minute for the service to be fully ready.
-echo You can check the logs with: docker compose logs -f
+echo NOTE: It may take 1-2 minutes for the service to be fully ready.
+echo       If the page doesn't load immediately, wait a moment and refresh.
 echo.
 echo Useful commands:
 echo    - View logs:        docker compose logs -f
