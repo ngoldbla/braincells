@@ -1,47 +1,60 @@
-# Brain Cells - Intelligent Spreadsheet Automation
-# Based on Node.js for the web interface
+# Use Debian-based Node.js image as the base for building
+FROM node:22-slim AS build
 
-FROM node:18-alpine
+# Set the working directory
+WORKDIR /usr/src/app
 
-# Install Python for any Python-based processing
-RUN apk add --no-cache python3 py3-pip bash curl
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+# This environment variable is used to skip the postinstall script during the build stage
+# See the package.json postinstall script for details
+ENV SKIP_POSTINSTALL=1 
 
-# Set working directory
-WORKDIR /app
+# Install dependencies and SQLite
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    sqlite3 \
+    libsqlite3-dev \
+    build-essential \
+    python3 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Create the Brain Cells application
-# Since Hugging Face AI Sheets isn't available as a Docker image,
-# we'll create a custom spreadsheet interface
+# Install pnpm globally
+RUN npm install -g pnpm
 
-# Copy package.json for the web app
-COPY package.json /app/package.json
+# Verify installation
+RUN pnpm --version
 
-# Create a simple Brain Cells web interface
-RUN mkdir -p /app/public /app/src /app/config
+# Copy package.json and lock file
+COPY ./package.json ./
+COPY ./pnpm-lock.yaml ./
 
-# Copy custom branding and configuration
-COPY branding.json /app/config/branding.json
-COPY custom-styles.css /app/public/custom-styles.css
-COPY about-content.html /app/public/about.html
-COPY startup-script.sh /app/startup-script.sh
-COPY brain-cells-app.html /app/public/index.html
+# Install dependencies with pnpm
+RUN pnpm install --frozen-lockfile 
 
-# Make startup script executable
-RUN chmod +x /app/startup-script.sh
+# Copy the rest of the source code
+COPY ./ ./
 
-# Environment variables for Brain Cells branding
-ENV APP_NAME="Brain Cells"
-ENV APP_TAGLINE="Intelligent Spreadsheet Automation"
-ENV APP_LOGO="🦉"
-ENV APP_ATTRIBUTION="Inspired by Hugging Face AI Sheets"
-ENV NODE_ENV=production
-ENV PORT=3000
+# Build the project
+RUN pnpm build
 
-# Install a simple HTTP server
-RUN npm install -g http-server
+# Use a Debian-based Node.js image for production
+FROM node:22-slim AS production
 
-# Expose port
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy the built application from the build stage
+COPY --from=build /usr/src/app/node_modules ./node_modules
+COPY --from=build /usr/src/app/server ./server
+COPY --from=build /usr/src/app/dist ./dist
+
+ENV PLAYWRIGHT_BROWSERS_PATH=/home/node/ms-playwright
+
+# COPY --from=build /usr/src/app/.env ./
+RUN npm exec playwright install-deps \
+    && npm exec playwright install chromium --only-shell
+
+# Expose the application port
 EXPOSE 3000
 
-# Run the Brain Cells application
-CMD ["http-server", "/app/public", "-p", "3000", "-c-1"]
+# Start the application
+CMD [ "node", "server/entry.express" ]

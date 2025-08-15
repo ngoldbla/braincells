@@ -37,7 +37,7 @@ export const sendTelemetry = async (
       method: 'HEAD',
       headers: {
         'user-agent': buildUserAgent({
-          aisheets: '1.0.0',
+          braincells: '1.0.0',
           userHash: hashedUser,
           ...userAgent,
         }),
