@@ -44,13 +44,30 @@ cd braincells
 
 #### For Windows Users:
 
+> **⚠️ Important:** Until PR #20 is merged, Windows users need to download fixed files to avoid Ollama restart loops.
+
+**Step 1: Clone the repository**
 ```cmd
-# Clone the repository
 git clone https://github.com/ngoldbla/braincells.git
 cd braincells
+```
 
-# Run the Windows setup script
+**Step 2: Download the fixed files** (Required until PR #20 merges)
+```powershell
+# Run these PowerShell commands to get working versions:
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/ngoldbla/braincells/add-windows-support/docker-compose.yml" -OutFile "docker-compose.yml"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/ngoldbla/braincells/add-windows-support/pull-model.bat" -OutFile "pull-model.bat"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/ngoldbla/braincells/add-windows-support/start-windows.bat" -OutFile "start-windows.bat"
+```
+
+**Step 3: Run the installer**
+```cmd
 start-windows.bat
+```
+
+**Step 4: Pull the Ollama model** (Required for local AI)
+```cmd
+pull-model.bat
 ```
 
 **Alternative: Using WSL (Windows Subsystem for Linux)**
@@ -71,9 +88,9 @@ docker compose up -d
 
 **That's it!** 🎉 Brain Cells will be available at: **http://localhost:3000**
 
-> **First run:** Docker will download the required images and Ollama will pull the AI model (gpt-oss:20b). This may take 5-10 minutes depending on your internet connection.
+> **First run:** Docker will download the required images. This may take 5-10 minutes depending on your internet connection.
 
-> **Windows Users:** Use the `start-windows.bat` script for the best experience - it handles all Windows-specific requirements automatically.
+> **Windows Users:** Follow the 4-step process above. The Ollama model must be pulled separately using `pull-model.bat` after the containers are running.
 
 ---
 
