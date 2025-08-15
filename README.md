@@ -30,10 +30,11 @@
 - Docker Desktop installed ([Download here](https://www.docker.com/products/docker-desktop))
 - **20GB+ free disk space** (Docker images require significant space)
 - 8GB+ RAM recommended
-- For macOS: Ensure Docker Desktop has sufficient disk allocation (Settings → Resources → Disk image size)
+- For macOS/Windows: Ensure Docker Desktop has sufficient disk allocation (Settings → Resources → Disk image size)
 
 ### 🚀 One-Command Install
 
+#### For Mac/Linux Users:
 ```bash
 # Clone and start Brain Cells
 git clone https://github.com/ngoldbla/braincells.git
@@ -41,7 +42,38 @@ cd braincells
 ./start.sh  # Interactive setup script
 ```
 
-Or manually:
+#### For Windows Users:
+
+**Option 1: Using PowerShell (Recommended)**
+```powershell
+# Clone and start Brain Cells
+git clone https://github.com/ngoldbla/braincells.git
+cd braincells
+powershell -ExecutionPolicy Bypass -File start.ps1
+```
+
+**Option 2: Using Batch File**
+```cmd
+# Clone the repository
+git clone https://github.com/ngoldbla/braincells.git
+cd braincells
+
+# Double-click start-windows.bat or run:
+start-windows.bat
+```
+
+**Option 3: Using WSL (Windows Subsystem for Linux)**
+```bash
+# First, install WSL if not already installed:
+wsl --install
+
+# Then in WSL terminal:
+git clone https://github.com/ngoldbla/braincells.git
+cd braincells
+./start.sh
+```
+
+#### Manual Installation (All Platforms):
 ```bash
 docker compose up -d
 ```
@@ -49,6 +81,8 @@ docker compose up -d
 **That's it!** 🎉 Brain Cells will be available at: **http://localhost:3000**
 
 > **First run:** Docker will download the required images and Ollama will pull the AI model (gpt-oss:20b). This may take 5-10 minutes depending on your internet connection.
+
+> **Windows Users:** If you encounter line ending issues with the bash script, the PowerShell script (start.ps1) or batch file (start-windows.bat) will work without any modifications.
 
 ---
 
@@ -250,6 +284,84 @@ MODEL_ENDPOINT_NAME=custom-model
 
 ### Enterprise Deployment
 For production deployments, contact: support@braincells.ai
+
+---
+
+## 🛠 Troubleshooting
+
+### Windows-Specific Issues
+
+#### Line Ending Errors (CRLF vs LF)
+If you encounter errors like `'\r': command not found` when running bash scripts:
+
+**Solution 1: Use the Windows-specific scripts**
+```powershell
+# Use PowerShell script instead
+powershell -ExecutionPolicy Bypass -File start.ps1
+
+# Or use the batch file
+start-windows.bat
+```
+
+**Solution 2: Fix line endings in Git**
+```bash
+# Configure Git to handle line endings correctly
+git config --global core.autocrlf input
+
+# Re-clone the repository
+rm -rf braincells
+git clone https://github.com/ngoldbla/braincells.git
+```
+
+**Solution 3: Use WSL (Windows Subsystem for Linux)**
+```bash
+# Install WSL
+wsl --install
+
+# Run commands in WSL terminal
+wsl
+cd /mnt/c/path/to/braincells
+./start.sh
+```
+
+#### Docker Desktop Not Starting
+- Ensure virtualization is enabled in BIOS
+- Restart Windows after Docker Desktop installation
+- Check that Hyper-V is enabled (Windows Pro/Enterprise)
+- For Windows Home, ensure WSL 2 backend is installed
+
+#### Permission Issues
+If you get permission denied errors:
+```powershell
+# Run PowerShell as Administrator
+# Then execute:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+### General Issues
+
+#### Port 3000 Already in Use
+```bash
+# Find and stop the process using port 3000
+# Windows:
+netstat -ano | findstr :3000
+taskkill /PID <PID> /F
+
+# Mac/Linux:
+lsof -i :3000
+kill -9 <PID>
+```
+
+#### Docker Disk Space Issues
+1. Open Docker Desktop
+2. Settings → Resources → Advanced
+3. Increase "Disk image size" to 80-100GB
+4. Apply & Restart
+
+#### Slow Performance
+- Allocate more RAM to Docker Desktop (Settings → Resources)
+- Ensure no antivirus is scanning Docker files
+- Use SSD storage for Docker images
 
 ---
 
