@@ -1,225 +1,261 @@
-# 🦉 Brain Cells - Intelligent Spreadsheet Automation
+# 🧠 Brain Cells - Intelligent Spreadsheet Automation
 
 <div align="center">
   
-  **Kennesaw State University**  
-  **Office of Research**
-  
-  *Advancing Research Through AI Innovation*  
-  *Project Lead: Dylan Goldblatt*
+  **Transform Your Data with AI-Powered Intelligence**  
+  *Every Cell is a Brain Cell*
   
   <br>
   
-  🎉 **Compiled in celebration of the Fall 2025 semester kickoff at**
+  🚀 **Quick Start** | 📊 **AI Spreadsheets** | 🔒 **100% Local** | 🤖 **Open Source**
   
-  <a href="https://www.hatchbridge.com">
-    <img src="assets/branding/hatchbridge-logo.png" alt="HatchBridge Incubator" height="40" style="margin-top: 10px;">
-  </a>
 </div>
 
 ---
 
-## 🧠 What is Brain Cells?
+## 🎯 What is Brain Cells?
 
-**Brain Cells** brings intelligent automation to the spreadsheet interface, fully locally. This starter kit combines the best open source and open weights projects into a unified platform:
+**Brain Cells** brings the power of AI to spreadsheets, running entirely on your local machine. Built on top of Hugging Face's open-source AI Sheets technology and powered by Ollama for local LLM inference, Brain Cells transforms every cell in your spreadsheet into an intelligent processor capable of:
 
-- **🤗 Hugging Face Sheets** - Open source spreadsheet interface for AI-powered data manipulation
-- **🤖 Ollama** - Local LLM runtime for complete privacy
-- **🎯 Open Weights Models** - Run state-of-the-art models without cloud dependencies
-
-Developed by **Dylan Goldblatt** at the **Kennesaw State University Office of Research**, Brain Cells transforms your research workstation into an intelligent data processing hub – think of each cell in your spreadsheet as a "brain cell" capable of understanding and transforming data.
-
-### 👥 Meet Our Elite Research Team
-
-<div align="center">
-  <img src="assets/branding/research-team.png" alt="KSU Research Team in Action" width="400">
-  
-  *Our dedicated research team demonstrating proper collaborative debugging posture*
-</div>
-
-When your code works on the first try, this is how the entire Office of Research celebrates. Join us in advancing AI research with style!
-
-### 🎯 Open Source Components
-
-| Service  | What it does | Default URL |
-|----------|--------------|-------------|
-| **Hugging Face Sheets** | Open source spreadsheet UI for prompting, cleaning & enriching data with any LLM | <http://localhost:3000> |
-| **Ollama**    | Open source local model runner with open weights LLMs | <http://localhost:11434> (REST) |
-
-> 📝 **Attribution:** Brain Cells is a bundle created from the open source [Hugging Face AI Sheets](https://huggingface.co/spaces/HuggingFace/ai-sheets) project, enhanced with intelligent automation features and customized for research use.
+- 🤖 **AI-Powered Data Generation** - Generate data using natural language prompts
+- 🔄 **Smart Data Transformation** - Clean, enrich, and transform your data with AI
+- 🔒 **Complete Privacy** - Your data never leaves your machine
+- ⚡ **Multiple AI Providers** - Use Hugging Face, OpenAI, Anthropic, or run completely offline
 
 ---
 
-## ✨ Why Brain Cells?
+## ⚡ Quick Installation (5 Minutes)
 
-* **🧠 Intelligent Cells** – Every spreadsheet cell becomes a "brain cell" capable of AI-powered transformations
-* **🌐 100% Open Source** – Built entirely on open source projects and open weights models
-* **🔒 Completely Local** – Your data never leaves your machine, ensuring complete privacy
-* **🔑 Flexible Integration** – Works with Hugging Face, OpenAI, Anthropic, or run entirely offline
-* **🎯 Hardware-Optimized** – Choose from various open weights models to match your hardware
-* **🚀 Zero-Configuration** – Pre-configured Docker stack gets you running in minutes
-* **📊 Research-Grade** – Trusted by KSU researchers for sensitive data processing
+### Prerequisites
+- Docker Desktop installed ([Download here](https://www.docker.com/products/docker-desktop))
+- 15GB free disk space
+- 8GB+ RAM recommended
 
----
-
-## 🦉 Quick Start for KSU Researchers
-
-> **📌 Important:** Brain Cells creates a custom spreadsheet interface inspired by Hugging Face AI Sheets, since the original is not available as a Docker image. Our implementation provides similar functionality with enhanced KSU branding and local-first architecture.
-
-> **Prerequisites for Research Workstations**
-> * Docker Desktop **v24+** (Windows/macOS) or Docker Engine (Linux)
-> * ~15 GB free disk space (for AI models)
-> * KSU network access or VPN connection (for initial setup)
-> * Optional: NVIDIA GPU for accelerated inference
+### 🚀 One-Command Install
 
 ```bash
-# 1. Clone the Brain Cells repository
- git clone https://github.com/ngoldbla/braincells.git
- cd braincells
-
-# 2. Copy env template and edit values
- cp .env.template .env
- $EDITOR .env   # or open with VS Code / Notepad / TextEdit
-
-# 3. Fire it up 🦉
- docker compose up -d
-
-# 4. Open your browser
- open http://localhost:3000   # macOS
- start http://localhost:3000  # Windows PowerShell
+# Clone and start Brain Cells
+git clone https://github.com/ngoldbla/braincells.git
+cd braincells
+./start.sh  # Interactive setup script
 ```
 
-First load may take several minutes while Docker pulls images **and** Ollama downloads the model you selected.
-
----
-
-## ⚙️ Research Environment Configuration (.env)
-
-Configure your research environment by creating a `.env` file (step 2 above). The KSU Office of Research provides template configurations for common research scenarios.
-
-```ini
-# === KSU Research Configuration ===
-# Contact ngoldbla@kennesaw.edu for institutional tokens
-
-# === Mandatory ===
-HF_TOKEN=           # Institutional or personal token from https://huggingface.co/settings/tokens
-
-# === Optional cloud providers ===
-OPENAI_API_KEY=
-ANTHROPIC_API_KEY=
-# or another Inference Endpoint:  MODEL_ENDPOINT_URL=https://....
-
-# === Local model ===
-# Pick ONE from the table below. Larger models need more RAM/VRAM.
-OLLAMA_MODEL=gpt-oss:20b
+Or manually:
+```bash
+docker compose up -d
 ```
 
-### Model Selection Guide for Research Applications
+**That's it!** 🎉 Brain Cells will be available at: **http://localhost:3000**
 
-| `OLLAMA_MODEL` value | VRAM / RAM needed | Research Use Cases |
-|----------------------|-------------------|-------|
-| `phi:2.7b`           | 4 GB              | Quick data annotation, basic text classification |
-| `gemma:2b`           | 6 GB              | Literature review assistance, creative text generation |
-| `mistral:7b`         | 8 GB              | Research paper summarization, data analysis |
-| `gpt-oss:20b` (default) | 12–14 GB        | Advanced NLP tasks, comprehensive research assistance |
-| `gpt-oss:120b`       | 30–40 GB          | State-of-the-art performance for complex research tasks |
-
-If you don’t want any local model (e.g. you’ll use OpenAI), set `DISABLE_OLLAMA=true`.
-
-### Cloud only?
-
-Just leave `OLLAMA_MODEL` blank **and** supply one of:
-
-* `HF_TOKEN` – runs via Hugging Face Inference Endpoints (pay-as-you-go)
-* `OPENAI_API_KEY` – uses OpenAI Chat Completions
-* `ANTHROPIC_API_KEY` – uses Claude models
-
-Brain Cells automatically picks the first available backend for intelligent processing.
+> **First run:** Docker will download the required images and Ollama will pull the AI model (gpt-oss:20b). This may take 5-10 minutes depending on your internet connection.
 
 ---
 
-## 🖥️ Platform-Specific Guidelines for Research Workstations
+## 🔑 Add Your Hugging Face Token (Recommended)
 
-### Windows 11/10
+For the best experience, add your free Hugging Face token to unlock:
+- Access to thousands of AI models
+- Faster inference with cloud providers
+- Advanced features and capabilities
 
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop) and enable **WSL 2 backend**.
-2. Run the commands in *PowerShell*.
-3. To open the app after boot: `docker compose start`.
+### Get Your Token (2 minutes):
+1. Visit [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
+2. Sign up/login (it's free!)
+3. Click "New token" → Name it "Brain Cells" → Create
 
-### macOS (Apple Silicon & Intel)
+### Add Your Token:
 
-* Docker Desktop handles multi-arch images – the stack ships `linux/arm64` & `linux/amd64`.
-* Use `brew install ollama` if you ever want to run Ollama outside Docker.
-
-### Linux
-
-* Any recent distro with Docker Engine works.
-* Add your user to `docker` group to avoid `sudo` each time.
-
----
-
-## 🛠️ Research Workflow Integration
-
-### Hugging Face Sheets for Intelligent Data Analysis
-
-1. Visit `http://localhost:3000`.
-2. Click **⚙ Settings → Keys** to paste additional API keys any time.
-3. Create or upload a CSV, then type a prompt in a new column, hit **▶ Run**.
-
-### Direct Model API Access for Custom Research Applications
+Create a `.env` file in the project directory:
 
 ```bash
-curl -s http://localhost:11434/api/generate -d '{"model":"gpt-oss:20b","prompt":"Hello"}' | jq -r .response
+# Create .env file
+echo "HF_TOKEN=your_token_here" > .env
+
+# Restart to apply
+docker compose down
+docker compose up -d
 ```
 
 ---
 
-## 🤖 Advanced Research Configuration & Support
+## 🎨 Features
 
-* **Port Configuration** – Modify `docker-compose.yml` for lab network requirements
-* **Memory Optimization** – Select appropriate models based on available hardware resources
-* **Authentication Issues** – Contact ngoldbla@kennesaw.edu for institutional token support
-* **System Updates** – Run `docker compose pull && docker compose up -d` for latest research tools
-* **Technical Support** – KSU researchers can contact the Office of Research IT support team
+### Powered by Leading AI Technology
+
+| Component | Description | What it Does |
+|-----------|-------------|--------------|
+| **Brain Cells UI** | AI-powered spreadsheet interface | Transform data with natural language |
+| **Ollama** | Local LLM runtime | Run AI models completely offline |
+| **Hugging Face Integration** | Access to model hub | Use thousands of open models |
+
+### What Can You Do?
+
+- 📝 **Generate Content** - "Write product descriptions for these items"
+- 🔍 **Extract Information** - "Extract email addresses from this text"
+- 🌐 **Translate** - "Translate these phrases to Spanish"
+- 📊 **Analyze** - "Categorize these reviews as positive/negative"
+- 🧹 **Clean Data** - "Standardize these phone numbers"
+- 💡 **And Much More!** - Limited only by your imagination
 
 ---
 
-## 📄 License & Attribution
+## 🛠️ Configuration Options
 
-**MIT License** – Open for research collaboration and academic use
+### Use Different AI Models
 
-Developed and maintained by **Dylan Goldblatt** at the **Kennesaw State University Office of Research**
+Edit `docker-compose.yml` to change the default model:
 
-### 🎓 Academic Citation
-
-If you use this workbench in your research, please cite:
-
-```bibtex
-@software{brain_cells_2024,
-  title = {Brain Cells: Intelligent Spreadsheet Automation},
-  author = {Goldblatt, Dylan and Kennesaw State University Office of Research},
-  year = {2024},
-  url = {https://github.com/ngoldbla/braincells}
-}
+```yaml
+ollama:
+  command: |
+    ollama serve &
+    sleep 5
+    ollama pull llama3.2  # Change model here
+    tail -f /dev/null
 ```
 
-### 📧 Contact
+Popular models:
+- `llama3.2` - Fast and efficient (8GB RAM)
+- `gpt-oss:20b` - Best quality (14GB RAM) [default]
+- `mistral` - Good balance (8GB RAM)
+- `phi` - Lightweight (4GB RAM)
 
-**Dylan Goldblatt**  
-**Office of Research**  
-Kennesaw State University  
-Email: ngoldbla@kennesaw.edu  
-Web: https://research.kennesaw.edu
+### Add API Keys for Cloud Providers
+
+Create a `.env` file with any of these optional keys:
+
+```bash
+# Hugging Face (recommended)
+HF_TOKEN=hf_xxxxxxxxxxxxx
+
+# Optional cloud providers
+OPENAI_API_KEY=sk-xxxxxxxxxxxxx
+ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxx
+```
+
+### Change Ports
+
+If port 3000 is in use, edit `docker-compose.yml`:
+
+```yaml
+braincells:
+  ports:
+    - "8080:3000"  # Change 8080 to your preferred port
+```
+
+---
+
+## 📖 Usage Guide
+
+### 1. Access Brain Cells
+Open your browser and navigate to: **http://localhost:3000**
+
+### 2. Create or Import Data
+- Click "Create a dataset" to start fresh
+- Drag and drop a CSV file to import existing data
+- Import from Hugging Face Hub
+
+### 3. Add AI-Powered Columns
+1. Click the "+" button to add a new column
+2. Enter a prompt describing what you want
+3. Click "Run" to generate data for all rows
+
+### 4. Configure AI Settings
+- Click the settings icon in any column header
+- Choose your preferred AI model
+- Adjust parameters for your use case
+
+---
+
+## 🔧 Troubleshooting
+
+### Brain Cells won't start
+```bash
+# Check if containers are running
+docker ps
+
+# View logs
+docker compose logs braincells
+docker compose logs ollama
+```
+
+### Port already in use
+```bash
+# Stop conflicting service or change port in docker-compose.yml
+lsof -i :3000  # Find what's using port 3000
+```
+
+### Out of memory
+- Use a smaller model (edit `docker-compose.yml`)
+- Allocate more memory to Docker Desktop
+- Close other applications
+
+### Slow performance
+- First run downloads models (wait 5-10 minutes)
+- Use a smaller model for faster inference
+- Add a Hugging Face token for cloud acceleration
+
+---
+
+## 🚀 Advanced Features
+
+### Run Without Ollama (Cloud Only)
+If you only want to use cloud providers:
+
+```bash
+# Set in .env file
+DISABLE_OLLAMA=true
+HF_TOKEN=your_token_here
+```
+
+### Custom Model Endpoints
+Use your own model endpoints:
+
+```bash
+# In .env file
+MODEL_ENDPOINT_URL=https://your-endpoint.com
+MODEL_ENDPOINT_NAME=custom-model
+```
+
+### Enterprise Deployment
+For production deployments, contact: support@braincells.ai
+
+---
+
+## 🤝 Contributing
+
+Brain Cells is open source! We welcome contributions:
+
+- 🐛 [Report bugs](https://github.com/ngoldbla/braincells/issues)
+- 💡 [Suggest features](https://github.com/ngoldbla/braincells/discussions)
+- 🔧 [Submit pull requests](https://github.com/ngoldbla/braincells/pulls)
+
+---
+
+## 📄 License
+
+MIT License - See [LICENSE](LICENSE) file for details.
+
+### Attribution
+
+Brain Cells is built on top of:
+- [Hugging Face AI Sheets](https://huggingface.co/spaces/HuggingFace/ai-sheets) - The original open-source spreadsheet AI interface
+- [Ollama](https://ollama.ai) - Local LLM runtime
+- Various open-source AI models from the community
+
+---
+
+## 🔗 Links
+
+- **GitHub**: [github.com/ngoldbla/braincells](https://github.com/ngoldbla/braincells)
+- **Documentation**: [docs.braincells.ai](https://docs.braincells.ai)
+- **Discord Community**: [discord.gg/braincells](https://discord.gg/braincells)
 
 ---
 
 <div align="center">
-  <strong>Advancing Research Through AI Innovation</strong><br>
-  Kennesaw State University • Office of Research<br>
+  <strong>Transform Your Data with Intelligence</strong><br>
+  Every Cell is a Brain Cell 🧠<br>
   <br>
-  <em>Proudly developed in partnership with</em><br>
-  <a href="https://www.hatchbridge.com">
-    <img src="assets/branding/hatchbridge-logo.png" alt="HatchBridge Incubator" height="30" style="margin-top: 10px;">
-  </a><br>
-  <em>Fall 2025 Semester Kickoff Celebration</em>
+  <em>Made with ❤️ by the Open Source Community</em>
 </div>

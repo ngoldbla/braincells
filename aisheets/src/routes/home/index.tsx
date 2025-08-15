@@ -321,7 +321,7 @@ export default component$(() => {
             <p class="italic mt-4">
               For questions and feedback, drop a message{' '}
               <a
-                href="https://huggingface.co/spaces/aisheets/sheets/discussions"
+                href="https://github.com/ngoldbla/braincells/discussions"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="underline"
@@ -341,7 +341,7 @@ export default component$(() => {
               <div class="flex flex-col items-center justify-center mb-4">
                 <MainLogo class="mt-6 md:mt-0 w-[70px] h-[70px]" />
                 <h1 class="text-neutral-600 text-2xl font-semibold">
-                  AI Sheets
+                  Brain Cells
                 </h1>
               </div>
               <div class="bg-neutral-100 rounded-md flex justify-center items-center flex-wrap p-2 gap-2">

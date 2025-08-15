@@ -12,23 +12,23 @@ services:
     command: |
       ollama serve &
       sleep 5
-      ollama pull gpt-oss:20b
+      ollama pull ${OLLAMA_MODEL:-gpt-oss:20b}
       tail -f /dev/null
-
   braincells:
     build:
       context: ./aisheets
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    depends_on:
-      - ollama
     environment:
       - PORT=3000
-      - HF_TOKEN=${HF_TOKEN:-}  # Optional: Hugging Face access token
+      - HF_TOKEN=${HF_TOKEN:-}  # Recommended: Hugging Face token for model access
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}  # Optional: OpenAI API key
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}  # Optional: Anthropic API key
+      - MODEL_ENDPOINT_URL=${MODEL_ENDPOINT_URL:-}  # Optional: Custom model endpoint
+      - MODEL_ENDPOINT_NAME=${MODEL_ENDPOINT_NAME:-}  # Optional: Custom model name
       - APP_NAME=Brain Cells
-      - APP_LOGO=🦉
+      - APP_LOGO=🧠
       - OLLAMA_HOST=http://ollama:11434  # Connect to Ollama service
     volumes:
       - ./data:/app/data  # Mount local data directory

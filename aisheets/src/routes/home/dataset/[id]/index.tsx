@@ -81,11 +81,11 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-  title: 'Sheets',
+  title: 'Brain Cells - Intelligent Spreadsheets',
   meta: [
     {
-      name: 'Sheets',
-      content: 'Sheets',
+      name: 'Brain Cells',
+      content: 'Brain Cells - AI-Powered Spreadsheet Automation',
     },
   ],
 };

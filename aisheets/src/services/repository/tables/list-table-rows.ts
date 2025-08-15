@@ -119,7 +119,7 @@ export const exportDatasetTableRows = async ({
 
       formatArgs = `, KV_METADATA {
         huggingface: '${JSON.stringify(featuresInfo)}',
-        generated_by: 'Sheets'
+        generated_by: 'Brain Cells'
       }`;
     }
 

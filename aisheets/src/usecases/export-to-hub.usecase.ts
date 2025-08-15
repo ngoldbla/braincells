@@ -96,7 +96,7 @@ function readmeContent(dataset: Dataset): string {
 ---
 pretty_name: ${dataset.name}
 tags:
-- aisheets
+- braincells
 - synthetic data
 
 ${yaml.stringify({
