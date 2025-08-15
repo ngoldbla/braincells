@@ -63,7 +63,7 @@ Write-Host ""
 Write-Host "   1. Open Docker Desktop" -ForegroundColor White
 Write-Host "   2. Go to Settings → Resources → Advanced" -ForegroundColor White
 Write-Host "   3. Increase 'Disk image size' to 80-100GB" -ForegroundColor White
-Write-Host "   4. Click 'Apply & Restart'" -ForegroundColor White
+Write-Host "   4. Click 'Apply `& Restart'" -ForegroundColor White
 Write-Host ""
 
 # Offer to clean Docker cache
@@ -200,7 +200,7 @@ try {
         Write-Host "1. Open Docker Desktop" -ForegroundColor White
         Write-Host "2. Go to Settings → Resources → Advanced" -ForegroundColor White
         Write-Host "3. Increase 'Disk image size' from 60GB to 100GB (or more)" -ForegroundColor White
-        Write-Host "4. Click 'Apply & Restart'" -ForegroundColor White
+        Write-Host "4. Click 'Apply `& Restart'" -ForegroundColor White
         Write-Host "5. Run .\start.ps1 again" -ForegroundColor White
         Write-Host ""
         Write-Host "📝 Why this happens:" -ForegroundColor Cyan
