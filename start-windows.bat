@@ -158,39 +158,6 @@ if not exist .env (
     )
 )
 
-REM Docker cleanup option
-echo ===============================================================
-echo Docker Maintenance (Optional)
-echo ===============================================================
-echo.
-echo Docker Desktop uses a virtual disk that can fill up over time.
-echo Cleaning Docker can free up significant space.
-echo.
-
-REM Initialize CLEAN variable to avoid comparison errors
-set "CLEAN=n"
-set /p "CLEAN=Would you like to clean Docker cache before starting? (y/n): "
-
-REM Check if user wants to clean (handle empty input)
-if /i "!CLEAN:~0,1!"=="y" (
-    echo.
-    echo Cleaning Docker system (this may take a minute)...
-    echo    - Removing stopped containers
-    echo    - Removing unused networks
-    echo    - Removing dangling images
-    echo    - Removing build cache
-    echo.
-    docker system prune -a --volumes -f
-    if !errorlevel! neq 0 (
-        echo [WARNING] Docker cleanup had some issues but continuing...
-    ) else (
-        echo [OK] Docker cleanup complete!
-    )
-) else (
-    echo [INFO] Skipping Docker cleanup
-)
-echo.
-
 REM Start Brain Cells
 echo ===============================================================
 echo Starting Brain Cells...
@@ -200,6 +167,9 @@ echo This may take 5-10 minutes on first run to:
 echo    - Build the Docker image
 echo    - Download AI models
 echo    - Install dependencies
+echo.
+echo TIP: To free up Docker disk space later, run:
+echo      docker system prune -a
 echo.
 echo Starting services with docker compose...
 echo.
@@ -265,10 +235,15 @@ echo.
 echo NOTE: It may take 1-2 minutes for the service to be fully ready.
 echo       If the page doesn't load immediately, wait a moment and refresh.
 echo.
+echo IMPORTANT: For local AI (Ollama), you need to pull a model:
+echo    Run: docker exec braincells-ollama-1 ollama pull gpt-oss:20b
+echo    Or use the included script: pull-model.bat
+echo.
 echo Useful commands:
 echo    - View logs:        docker compose logs -f
 echo    - Stop Brain Cells: docker compose down
 echo    - Restart:          docker compose restart
+echo    - Pull Ollama model: pull-model.bat
 echo    - Clean up Docker:  docker system prune -a
 echo.
 echo Every Cell is a Brain Cell!
