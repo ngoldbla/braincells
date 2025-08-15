@@ -4,7 +4,6 @@ import type {
   RequestEvent,
   RequestHandler,
 } from '@builder.io/qwik-city';
-import { Login } from '~/components/ui/login/Login';
 import { MobileBanner } from '~/components/ui/mobile/banner';
 import { Tips } from '~/components/ui/tips/tips';
 import { DatasetName } from '~/features/datasets';
@@ -41,7 +40,7 @@ export default component$(() => {
                 <DatasetName />
                 <SaveDataset />
               </div>
-              {session.value.anonymous ? <Login /> : <Username />}
+              {!session.value.anonymous && <Username />}
             </div>
           </div>
         </div>
