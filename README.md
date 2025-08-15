@@ -28,8 +28,9 @@
 
 ### Prerequisites
 - Docker Desktop installed ([Download here](https://www.docker.com/products/docker-desktop))
-- 15GB free disk space
+- **20GB+ free disk space** (Docker images require significant space)
 - 8GB+ RAM recommended
+- For macOS: Ensure Docker Desktop has sufficient disk allocation (Settings → Resources → Disk image size)
 
 ### 🚀 One-Command Install
 
@@ -169,6 +170,31 @@ Open your browser and navigate to: **http://localhost:3000**
 
 ## 🔧 Troubleshooting
 
+### "No space left on device" error during installation
+This is the most common issue. Solutions:
+
+1. **Clean Docker system** (recommended first step):
+   ```bash
+   docker system prune -a --volumes
+   ```
+   This removes all unused containers, images, and volumes.
+
+2. **Check available disk space**:
+   ```bash
+   df -h
+   ```
+   You need at least 20GB free space.
+
+3. **For Docker Desktop users**:
+   - Open Docker Desktop → Settings → Resources
+   - Increase "Disk image size" to at least 60GB
+   - Click "Apply & Restart"
+
+4. **macOS specific**:
+   - Docker Desktop creates a large disk image file
+   - Location: `~/Library/Containers/com.docker.docker/Data/vms/0/`
+   - If needed, reinstall Docker Desktop after cleaning up disk space
+
 ### Brain Cells won't start
 ```bash
 # Check if containers are running
@@ -248,8 +274,6 @@ Brain Cells is built on top of:
 ## 🔗 Links
 
 - **GitHub**: [github.com/ngoldbla/braincells](https://github.com/ngoldbla/braincells)
-- **Documentation**: [docs.braincells.ai](https://docs.braincells.ai)
-- **Discord Community**: [discord.gg/braincells](https://discord.gg/braincells)
 
 ---
 
