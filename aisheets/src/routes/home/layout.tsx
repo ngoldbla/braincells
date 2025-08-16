@@ -6,6 +6,7 @@ import {
 } from '@builder.io/qwik';
 
 import { ModalsProvider } from '~/components';
+import { TauriStatus } from '~/components/ui';
 import { MainSidebar } from '~/features/main-sidebar';
 import { type Model, useClientConfig } from '~/loaders';
 import { useHubModels } from '~/loaders';
@@ -35,6 +36,7 @@ export default component$(() => {
           </main>
         </ActiveDatasetProvider>
       </div>
+      <TauriStatus />
     </ModalsProvider>
   );
 });

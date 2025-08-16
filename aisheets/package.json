@@ -31,7 +31,12 @@
     "test": "vitest",
     "test.unit.ui": "vitest --ui",
     "qwik": "qwik",
-    "prepare": "husky"
+    "prepare": "husky",
+    "tauri": "PATH=\"$HOME/.cargo/bin:$PATH\" tauri",
+    "tauri:dev": "PATH=\"$HOME/.cargo/bin:$PATH\" EMBEDDING_MODEL_PROVIDER=dummy EMBEDDING_ENDPOINT_URL=http://localhost:9999/dummy HF_TOKEN=dummy_token_for_local_dev tauri dev",
+    "tauri:build": "PATH=\"$HOME/.cargo/bin:$PATH\" tauri build",
+    "tauri:icon": "PATH=\"$HOME/.cargo/bin:$PATH\" tauri icon",
+    "tauri:info": "PATH=\"$HOME/.cargo/bin:$PATH\" tauri info"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -42,6 +47,8 @@
     "@qwik-ui/utils": "^0.3.1",
     "@qwikest/icons": "^0.0.13",
     "@tanstack/virtual-core": "^3.13.6",
+    "@tauri-apps/api": "^2.7.0",
+    "@tauri-apps/cli": "^2.7.1",
     "@types/compression": "^1.7.5",
     "@types/eslint": "8.56.10",
     "@types/express": "^4.17.21",
@@ -62,7 +69,7 @@
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.8.3",
-    "undici": "^7.3.0",
+    "undici": "^5.28.4",
     "vite": "5.3.5",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^3.0.7"
@@ -80,6 +87,7 @@
     "dompurify": "^3.2.6",
     "express": "4.20.0",
     "highlight.js": "^11.11.1",
+    "katex": "^0.16.22",
     "marked": "^16.0.0",
     "marked-highlight": "^2.2.1",
     "marked-katex-extension": "^5.1.4",

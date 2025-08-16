@@ -6,7 +6,7 @@ export * from './popover/popover';
 export * from './select/select';
 export * from './skeleton/skeleton';
 export * from './textarea/textarea';
-export * from './textarea/textarea';
 export * from './checkbox/checkbox';
 export * from './toggle-group/toggle-group';
 export * from './accordion/accordion';
+export * from './tauri-status/tauri-status';

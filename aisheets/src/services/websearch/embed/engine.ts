@@ -34,15 +34,22 @@ const {
   },
 } = appConfig;
 
-if (provider === undefined && endpointUrl === undefined) {
-  const extractor = await pipeline('feature-extraction', model);
+// Defer model loading until actually needed
+let extractorPromise: Promise<any> | null = null;
 
+if (provider === undefined && endpointUrl === undefined) {
   processEmbeddings = async (
     texts: string[],
     options: {
       accessToken: string;
     },
   ): Promise<number[][]> => {
+    // Lazy load the extractor on first use
+    if (!extractorPromise) {
+      console.log('Loading embedding model:', model);
+      extractorPromise = pipeline('feature-extraction', model);
+    }
+    const extractor = await extractorPromise;
     const results = await extractor(texts, { pooling: 'cls' });
     return results.tolist();
   };
