@@ -27,18 +27,26 @@ export default defineConfig(({ command, mode }): UserConfig => {
     },
     build: {
       target: "esnext",
+      // Tauri expects the built files in dist folder
+      outDir: "dist",
+      emptyOutDir: true,
     },
     server: {
       headers: {
         // Don't cache the server response in dev mode
         "Cache-Control": "public, max-age=0",
       },
+      // Tauri expects a specific port
+      port: 5173,
+      strictPort: true,
     },
     preview: {
       headers: {
         "Cache-Control": "public, max-age=600",
       },
     },
+    // Prevent asset inlining for Tauri
+    base: "./",
   };
 });
 

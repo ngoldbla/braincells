@@ -1,11 +1,12 @@
 import { $, component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { Link } from '@builder.io/qwik-city';
 import { cn } from '@qwik-ui/utils';
-import { LuPanelLeft } from '@qwikest/icons/lucide';
+import { LuPanelLeft, LuSettings } from '@qwikest/icons/lucide';
 import { isToday } from 'date-fns';
 import { useModals } from '~/components/hooks';
 import { useClickOutside } from '~/components/hooks/click/outside';
 import { MainLogo } from '~/components/ui/logo/logo';
+import { SettingsModal } from '~/components/ui/settings/settings-modal';
 import { useAllDatasetsLoader, useSession } from '~/loaders';
 import { useDatasetsStore } from '~/state';
 
@@ -39,6 +40,7 @@ export const MainSidebar = component$(() => {
   const session = useSession();
 
   const datasets = useSignal(datasetsLoaded.value);
+  const isSettingsOpen = useSignal(false);
 
   const ref = useClickOutside(
     $(() => {
@@ -161,6 +163,28 @@ export const MainSidebar = component$(() => {
           </div>
         )}
       </div>
+      
+      {/* Settings Button at the bottom */}
+      <div class="border-t border-gray-200 p-4 mt-auto">
+        <button
+          type="button"
+          onClick$={() => {
+            isSettingsOpen.value = true;
+          }}
+          class="flex items-center gap-3 w-full py-2 px-3 hover:bg-gray-100 rounded text-sm font-light"
+        >
+          <LuSettings class="w-5 h-5" />
+          Settings
+        </button>
+      </div>
+      
+      {/* Settings Modal */}
+      <SettingsModal
+        isOpen={isSettingsOpen.value}
+        onClose$={() => {
+          isSettingsOpen.value = false;
+        }}
+      />
     </div>
   );
 });

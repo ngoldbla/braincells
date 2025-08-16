@@ -10,6 +10,7 @@ import { isDev } from '@builder.io/qwik';
 import { appConfig } from '~/config';
 import { cacheGet, cacheSet } from '~/services/cache';
 import { type Example, materializePrompt } from './materialize-prompt';
+import { isOllamaEnabled, ollamaGenerate, type OllamaMessage } from './ollama-adapter';
 
 export interface PromptExecutionParams {
   modelName: string;
@@ -57,14 +58,6 @@ export const runPromptExecution = async ({
     data,
     examples,
   });
-  const args = normalizeChatCompletionArgs({
-    messages: [{ role: 'user', content: inputPrompt }],
-    modelProvider,
-    modelName,
-    accessToken,
-    endpointUrl,
-  });
-  const options = normalizeOptions(timeout);
 
   if (isDev) showPromptInfo(modelName, modelProvider, endpointUrl, inputPrompt);
 
@@ -86,14 +79,36 @@ export const runPromptExecution = async ({
       };
     }
 
-    const response = await chatCompletion(args, options);
-    const result = response.choices[0].message.content;
+    let result: string | undefined;
+
+    // Check if Ollama is enabled
+    if (isOllamaEnabled() || endpointUrl?.includes('11434')) {
+      const messages: OllamaMessage[] = [
+        { role: 'user', content: inputPrompt }
+      ];
+      const ollamaModel = process.env.DEFAULT_MODEL || modelName || 'llama3.2';
+      result = await ollamaGenerate(messages, ollamaModel, false) as string;
+    } else {
+      // Use Hugging Face API
+      const args = normalizeChatCompletionArgs({
+        messages: [{ role: 'user', content: inputPrompt }],
+        modelProvider,
+        modelName,
+        accessToken,
+        endpointUrl,
+      });
+      const options = normalizeOptions(timeout);
+      const response = await chatCompletion(args, options);
+      result = response.choices[0].message.content;
+    }
 
     if (result?.toLocaleLowerCase().includes('no more items')) {
       throw new Error(result);
     }
 
-    cacheSet(cacheKey, result);
+    if (result) {
+      cacheSet(cacheKey, result);
+    }
 
     return {
       value: result,

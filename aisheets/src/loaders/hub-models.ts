@@ -116,6 +116,12 @@ const fetchModelsForPipeline = async (
   } = appConfig;
 
   const token = session.anonymous ? hfToken : session.token;
+  
+  // Skip API call if no valid token is available
+  if (!token || token === 'dummy_token_for_local_dev') {
+    return [];
+  }
+  
   const response = await fetch(`${url}?${params}`, {
     method: 'GET',
     headers: {
@@ -124,12 +130,15 @@ const fetchModelsForPipeline = async (
   });
 
   if (!response.ok) {
-    const message = await response.text();
-    console.warn(
-      `Failed to fetch ${pipelineTag} models`,
-      response.status,
-      message,
-    );
+    // Only log in development mode and suppress 401 errors
+    if (response.status !== 401) {
+      const message = await response.text();
+      console.warn(
+        `Failed to fetch ${pipelineTag} models`,
+        response.status,
+        message,
+      );
+    }
     return [];
   }
 
