@@ -1,0 +1,81 @@
+client:
+  name: basic
+  file-system: device-agnostic
+tools: {}
+targets:
+  "BrainCellsApp-arm64-apple-macosx15.0-debug.exe": ["<BrainCellsApp-arm64-apple-macosx15.0-debug.exe>"]
+  "BrainCellsApp-arm64-apple-macosx15.0-debug.module": ["<BrainCellsApp-arm64-apple-macosx15.0-debug.module>"]
+  "PackageStructure": ["<PackageStructure>"]
+  "main": ["<BrainCellsApp-arm64-apple-macosx15.0-debug.exe>","<BrainCellsApp-arm64-apple-macosx15.0-debug.module>"]
+  "test": ["<BrainCellsApp-arm64-apple-macosx15.0-debug.exe>","<BrainCellsApp-arm64-apple-macosx15.0-debug.module>"]
+default: "main"
+nodes:
+  "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/BrainCellsApp/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+  "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp":
+    is-mutated: true
+commands:
+  "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp-entitlement.plist":
+    tool: write-auxiliary-file
+    inputs: ["<entitlement-plist>","<com.apple.security.get-task-allow>"]
+    outputs: ["/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp-entitlement.plist"]
+    description: "Write auxiliary file /Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp-entitlement.plist"
+
+  "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/BrainCellsApp/BrainCellsApp.swift","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/BrainCellsApp/ContentView.swift"]
+    outputs: ["/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/sources"]
+    description: "Write auxiliary file /Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/sources"
+
+  "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.product/Objects.LinkFileList":
+    tool: write-auxiliary-file
+    inputs: ["<link-file-list>","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/BrainCellsApp.swift.o","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/ContentView.swift.o"]
+    outputs: ["/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.product/Objects.LinkFileList"]
+    description: "Write auxiliary file /Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.product/Objects.LinkFileList"
+
+  "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt":
+    tool: write-auxiliary-file
+    inputs: ["<swift-get-version>","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"]
+    outputs: ["/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"]
+    always-out-of-date: "true"
+    description: "Write auxiliary file /Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+
+  "<BrainCellsApp-arm64-apple-macosx15.0-debug.exe>":
+    tool: phony
+    inputs: ["<BrainCellsApp-arm64-apple-macosx15.0-debug.exe-CodeSigning>"]
+    outputs: ["<BrainCellsApp-arm64-apple-macosx15.0-debug.exe>"]
+
+  "<BrainCellsApp-arm64-apple-macosx15.0-debug.module>":
+    tool: phony
+    inputs: ["/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/BrainCellsApp.swift.o","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/ContentView.swift.o","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/Modules/BrainCellsApp.swiftmodule"]
+    outputs: ["<BrainCellsApp-arm64-apple-macosx15.0-debug.module>"]
+
+  "C.BrainCellsApp-arm64-apple-macosx15.0-debug.exe":
+    tool: shell
+    inputs: ["/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/BrainCellsApp.swift.o","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/ContentView.swift.o","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.product/Objects.LinkFileList"]
+    outputs: ["/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp"]
+    description: "Linking ./.build/arm64-apple-macosx/debug/BrainCellsApp"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-L","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug","-o","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp","-module-name","BrainCellsApp","-Xlinker","-no_warn_duplicate_libraries","-emit-executable","-Xlinker","-alias","-Xlinker","_BrainCellsApp_main","-Xlinker","_main","-Xlinker","-rpath","-Xlinker","@loader_path","@/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.product/Objects.LinkFileList","-target","arm64-apple-macosx14.0","-Xlinker","-add_ast_path","-Xlinker","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/Modules/BrainCellsApp.swiftmodule","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g"]
+
+  "C.BrainCellsApp-arm64-apple-macosx15.0-debug.exe-entitlements":
+    tool: shell
+    inputs: ["/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp-entitlement.plist"]
+    outputs: ["<BrainCellsApp-arm64-apple-macosx15.0-debug.exe-CodeSigning>"]
+    description: "Applying debug entitlements to ./.build/arm64-apple-macosx/debug/BrainCellsApp"
+    args: ["codesign","--force","--sign","-","--entitlements","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp-entitlement.plist","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp"]
+
+  "C.BrainCellsApp-arm64-apple-macosx15.0-debug.module":
+    tool: shell
+    inputs: ["/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/BrainCellsApp/BrainCellsApp.swift","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/BrainCellsApp/ContentView.swift","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/sources"]
+    outputs: ["/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/BrainCellsApp.swift.o","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/ContentView.swift.o","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/Modules/BrainCellsApp.swiftmodule"]
+    description: "Compiling Swift Module 'BrainCellsApp' (2 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","BrainCellsApp","-emit-dependencies","-emit-module","-emit-module-path","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/Modules/BrainCellsApp.swiftmodule","-output-file-map","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/output-file-map.json","-incremental","-c","@/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/sources","-I","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx14.0","-enable-batch-mode","-index-store-path","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-j16","-DSWIFT_PACKAGE","-DDEBUG","-module-cache-path","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-Xfrontend","-entry-point-function-name","-Xfrontend","BrainCellsApp_main","-color-diagnostics","-swift-version","5","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","braincellsapp"]
+
+  "PackageStructure":
+    tool: package-structure-tool
+    inputs: ["/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/BrainCellsApp/","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/Package.swift","/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/Package.resolved"]
+    outputs: ["<PackageStructure>"]
+    description: "Planning build"
+    allow-missing-inputs: true
+
