@@ -1,0 +1,17 @@
+{
+  "": {
+    "swift-dependencies": "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/master.swiftdeps"
+  },
+  "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/BrainCellsApp/BrainCellsApp.swift": {
+    "dependencies": "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/BrainCellsApp.d",
+    "object": "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/BrainCellsApp.swift.o",
+    "swiftmodule": "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/BrainCellsApp~partial.swiftmodule",
+    "swift-dependencies": "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/BrainCellsApp.swiftdeps"
+  },
+  "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/BrainCellsApp/ContentView.swift": {
+    "dependencies": "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/ContentView.d",
+    "object": "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/ContentView.swift.o",
+    "swiftmodule": "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/ContentView~partial.swiftmodule",
+    "swift-dependencies": "/Users/ngoldbla/LocalGithub/braincells/.conductor/san-marino/BrainCellsApp/.build/arm64-apple-macosx/debug/BrainCellsApp.build/ContentView.swiftdeps"
+  }
+}
