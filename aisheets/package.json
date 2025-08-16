@@ -13,7 +13,7 @@
   "type": "module",
   "scripts": {
     "postinstall": "if [ -z \"$SKIP_POSTINSTALL\" ] || [ \"$SKIP_POSTINSTALL\" = \"0\" ]; then npx playwright install; else echo 'Skipping playwright installation.'; fi",
-    "build": "qwik build",
+    "build": "npx qwik build",
     "build.client": "vite build",
     "build.preview": "vite build --ssr src/entry.preview.tsx",
     "build.server": "vite build -c adapters/express/vite.config.ts",
@@ -25,12 +25,12 @@
     "lint.check": "biome lint .",
     "fmt": "biome format . --write",
     "fmt.check": "biome format .",
-    "preview": "qwik build preview && vite preview --open",
+    "preview": "npx qwik build preview && vite preview --open",
     "serve": "node server/entry.express",
     "start": "vite --open --mode ssr",
     "test": "vitest",
     "test.unit.ui": "vitest --ui",
-    "qwik": "qwik",
+    "qwik": "npx qwik",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -62,7 +62,7 @@
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.8.3",
-    "undici": "^7.3.0",
+    "undici": "^6.19.8",
     "vite": "5.3.5",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^3.0.7"
@@ -80,7 +80,8 @@
     "dompurify": "^3.2.6",
     "express": "4.20.0",
     "highlight.js": "^11.11.1",
-    "marked": "^16.0.0",
+    "katex": "^0.16.22",
+    "marked": "^14.1.4",
     "marked-highlight": "^2.2.1",
     "marked-katex-extension": "^5.1.4",
     "mustache": "^4.2.0",
