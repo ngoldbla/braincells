@@ -1,0 +1,155 @@
+{
+  "name": "brain-cells-electron",
+  "version": "1.0.0",
+  "description": "Brain Cells - Intelligent Spreadsheet Automation for Research (Electron App)",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "prebuild:frontend": "cd ../aisheets && npm install --legacy-peer-deps",
+    "build:frontend": "cd ../aisheets && npm run build",
+    "build:win": "npm run build:frontend && electron-builder --win",
+    "build:mac": "npm run build:frontend && electron-builder --mac",
+    "build:all": "npm run build:frontend && electron-builder -mw",
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "keywords": [
+    "spreadsheet",
+    "automation",
+    "ai",
+    "research",
+    "electron"
+  ],
+  "author": "Brain Cells Team",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^32.2.2",
+    "electron-builder": "^25.1.8"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "compression": "^1.8.1",
+    "electron-log": "^5.2.4",
+    "electron-store": "^10.0.0",
+    "electron-updater": "^6.3.9",
+    "express": "^4.21.2",
+    "node-fetch": "^3.3.2"
+  },
+  "build": {
+    "appId": "com.braincells.app",
+    "productName": "Brain Cells",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "start-server.js",
+      "ollama/**",
+      "assets/**",
+      "node_modules/**"
+    ],
+    "extraResources": [
+      {
+        "from": "../aisheets/dist",
+        "to": "aisheets/dist",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "../aisheets/server",
+        "to": "aisheets/server",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "../aisheets/node_modules",
+        "to": "aisheets/node_modules",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "../aisheets/package.json",
+        "to": "aisheets/package.json"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "assets/icon.icns",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "assets/entitlements.mac.plist",
+      "entitlementsInherit": "assets/entitlements.mac.plist",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "license": "../LICENSE"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Office",
+      "icon": "assets/icon.png"
+    }
+  }
+}
