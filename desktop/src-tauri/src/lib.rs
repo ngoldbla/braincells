@@ -51,23 +51,23 @@ pub fn run() {
             install_ollama_cmd,
             check_system_requirements,
             // Database commands - Datasets
-            database::create_dataset,
-            database::list_datasets,
-            database::get_dataset,
-            database::delete_dataset,
+            commands::database::create_dataset,
+            commands::database::list_datasets,
+            commands::database::get_dataset,
+            commands::database::delete_dataset,
             // Database commands - Columns
-            database::add_column,
-            database::list_columns,
-            database::delete_column,
+            commands::database::add_column,
+            commands::database::list_columns,
+            commands::database::delete_column,
             // Database commands - Cells
-            database::update_cell,
-            database::get_column_cells,
+            commands::database::update_cell,
+            commands::database::get_column_cells,
             // Database commands - Table Views
-            database::get_table_view,
-            database::count_rows,
+            commands::database::get_table_view,
+            commands::database::count_rows,
             // Database commands - Import/Export
-            database::import_csv,
-            database::export_csv,
+            commands::database::import_csv,
+            commands::database::export_csv,
             // Generator commands
             generator::generate_column_cells,
         ])
