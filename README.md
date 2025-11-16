@@ -48,10 +48,12 @@ To build and publish new executables:
 
 1. **Merge changes** - Merge your PR into the main branch on GitHub
 2. **Create a release** - Go to GitHub → Releases → "Draft a new release"
-3. **Create tag** - Click "Choose a tag" → Type `v0.1.0` (or your version) → "Create new tag on publish"
+3. **Create tag** - Click "Choose a tag" → Type `v0.1.0` (**must start with `v`**) → "Create new tag on publish"
 4. **Publish** - Click "Publish release"
 
-This automatically triggers the GitHub Actions workflow to build executables for all platforms (Mac, Windows, Linux). The installers will be attached to the release once the build completes.
+This automatically triggers the GitHub Actions workflow to build executables for all platforms (Mac, Windows, Linux). The installers will be attached to the release once the build completes (5-15 minutes).
+
+**Important:** The tag must start with `v` (e.g., `v0.1.0`, `v1.2.3`) for the workflow to trigger automatically.
 
 ## License
 
