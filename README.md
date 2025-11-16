@@ -4,30 +4,25 @@
 
 ## Installation
 
-### What You Need
-- **Docker Desktop** ([Download here](https://www.docker.com/products/docker-desktop))
-- **20GB+ free disk space**
-- **8GB+ RAM**
+### 1. Download
 
-### Install on Mac/Linux
+Go to [Releases](https://github.com/ngoldbla/braincells/releases) and download the installer for your platform:
 
-```bash
-git clone https://github.com/ngoldbla/braincells.git
-cd braincells
-./start.sh
-```
+- **Mac**: Download the `.dmg` file
+- **Windows**: Download the `.msi` file
+- **Linux**: Download the `.AppImage`, `.deb`, or `.rpm` file
 
-### Install on Windows
+### 2. Install
 
-```cmd
-git clone https://github.com/ngoldbla/braincells.git
-cd braincells
-start-windows.bat
-```
+- **Mac**: Open the `.dmg` and drag Brain Cells to Applications
+- **Windows**: Run the `.msi` installer
+- **Linux**: Run the AppImage or install the `.deb`/`.rpm` package
 
-**That's it.** Open your browser to **http://localhost:3000**
+### 3. Run
 
-> First run takes 5-10 minutes while downloading AI models.
+Launch Brain Cells from your Applications folder or Start menu.
+
+That's it!
 
 ## What Can You Do?
 
@@ -37,20 +32,15 @@ start-windows.bat
 - Analyze data ("Categorize these reviews as positive/negative")
 - Clean data ("Standardize these phone numbers")
 
-## Common Issues
+## AI Providers
 
-**"No space left on device"**
-```bash
-docker system prune -a --volumes
-```
+Brain Cells supports multiple AI providers:
 
-**Port 3000 already in use**
-- Edit `docker-compose.yml` and change `"3000:3000"` to `"8080:3000"` (or any free port)
+- **Local**: Install Ollama for completely offline AI (the app can install it for you)
+- **OpenAI**: Use GPT-4 and GPT-3.5 models
+- **Anthropic**: Use Claude models
 
-**Won't start**
-```bash
-docker compose logs
-```
+Configure your preferred provider on first launch.
 
 ## License
 
