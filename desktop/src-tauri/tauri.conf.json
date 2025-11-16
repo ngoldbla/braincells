@@ -47,6 +47,11 @@
       "deb": {
         "depends": []
       }
+    },
+    "macOS": {
+      "minimumSystemVersion": "10.13",
+      "entitlements": null,
+      "signingIdentity": null
     }
   },
   "plugins": {
