@@ -89,7 +89,7 @@ export function OllamaConfigStep() {
 
   const handleSave = () => {
     const provider = {
-      id: crypto.randomUUID(),
+      id: `provider-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       name: 'Local Ollama',
       provider_type: ProviderType.LocalOllama,
       local_config: {

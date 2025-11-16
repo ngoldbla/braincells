@@ -118,22 +118,22 @@ pub fn create_provider(config: &ProviderConfig) -> Result<Box<dyn LLMProvider>> 
         ProviderType::CloudOpenAI => {
             let credentials = config.credentials.as_ref()
                 .ok_or_else(|| anyhow::anyhow!("Missing credentials for OpenAI"))?;
-            Ok(Box::new(cloud::OpenAIProvider::new(credentials.clone())))
+            Ok(Box::new(cloud::OpenAIProvider::new(credentials.clone())?))
         }
         ProviderType::CloudAnthropic => {
             let credentials = config.credentials.as_ref()
                 .ok_or_else(|| anyhow::anyhow!("Missing credentials for Anthropic"))?;
-            Ok(Box::new(cloud::AnthropicProvider::new(credentials.clone())))
+            Ok(Box::new(cloud::AnthropicProvider::new(credentials.clone())?))
         }
         ProviderType::CloudCustom => {
             let credentials = config.credentials.as_ref()
                 .ok_or_else(|| anyhow::anyhow!("Missing credentials for Custom provider"))?;
-            Ok(Box::new(cloud::CustomProvider::new(credentials.clone())))
+            Ok(Box::new(cloud::CustomProvider::new(credentials.clone())?))
         }
         ProviderType::LocalOllama => {
             let local_config = config.local_config.as_ref()
                 .ok_or_else(|| anyhow::anyhow!("Missing local config for Ollama"))?;
-            Ok(Box::new(ollama::OllamaProvider::new(local_config.clone())))
+            Ok(Box::new(ollama::OllamaProvider::new(local_config.clone())?))
         }
         ProviderType::LocalVLLM => {
             // TODO: Implement vLLM provider
