@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Dataset, Column, TableView, Cell, ColumnType } from '../types/database';
+import type { Dataset, Column, TableView, ColumnType } from '../types/database';
 import * as api from '../lib/tauri-api';
 
 interface SpreadsheetState {
