@@ -1,4 +1,11 @@
 import NodeCache from 'node-cache';
+import {
+  persistentCacheGet,
+  persistentCacheSet,
+  persistentCacheHas,
+  persistentCacheStats,
+  persistentCacheFlush,
+} from './persistent-cache';
 
 const FIVE_MINUTES = 60 * 5;
 const ONE_HOUR = 60 * 60;
@@ -19,6 +26,7 @@ const cacheKey = (key: any): string => {
   );
 };
 
+// In-memory cache functions
 export const cacheGet = (key: any): any | undefined => {
   if (!key) return undefined;
 
@@ -36,4 +44,13 @@ export const cacheSet = (key: any, value: any): any => {
   serverCache.set(key, value);
 
   return value;
+};
+
+// Export persistent cache functions
+export {
+  persistentCacheGet,
+  persistentCacheSet,
+  persistentCacheHas,
+  persistentCacheStats,
+  persistentCacheFlush,
 };

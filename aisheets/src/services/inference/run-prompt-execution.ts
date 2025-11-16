@@ -8,7 +8,7 @@ import {
 
 import { isDev } from '@builder.io/qwik';
 import { appConfig } from '~/config';
-import { cacheGet, cacheSet } from '~/services/cache';
+import { cacheGet, cacheSet, persistentCacheGet, persistentCacheSet } from '~/services/cache';
 import { type Example, materializePrompt } from './materialize-prompt';
 
 export interface PromptExecutionParams {
@@ -78,7 +78,17 @@ export const runPromptExecution = async ({
       examples,
       withSources: sourcesContext && sourcesContext.length > 0,
     };
-    const cacheValue = cacheGet(cacheKey);
+
+    // Try in-memory cache first, then persistent cache
+    let cacheValue = cacheGet(cacheKey);
+    if (!cacheValue) {
+      cacheValue = persistentCacheGet(cacheKey);
+      if (cacheValue) {
+        // Promote to in-memory cache for faster access
+        cacheSet(cacheKey, cacheValue);
+      }
+    }
+
     if (cacheValue) {
       return {
         value: cacheValue,
@@ -93,7 +103,9 @@ export const runPromptExecution = async ({
       throw new Error(result);
     }
 
+    // Cache in both in-memory and persistent cache
     cacheSet(cacheKey, result);
+    persistentCacheSet(cacheKey, result);
 
     return {
       value: result,
@@ -145,7 +157,16 @@ export const runPromptExecutionStream = async function* ({
     withSources: sourcesContext && sourcesContext.length > 0,
   };
 
-  const cacheValue = cacheGet(cacheKey);
+  // Try in-memory cache first, then persistent cache
+  let cacheValue = cacheGet(cacheKey);
+  if (!cacheValue) {
+    cacheValue = persistentCacheGet(cacheKey);
+    if (cacheValue) {
+      // Promote to in-memory cache for faster access
+      cacheSet(cacheKey, cacheValue);
+    }
+  }
+
   if (cacheValue) {
     yield {
       value: cacheValue,
@@ -168,6 +189,10 @@ export const runPromptExecutionStream = async function* ({
     if (accumulated.toLocaleLowerCase().includes('no more items')) {
       throw new Error(accumulated);
     }
+
+    // Cache the final result in both caches
+    cacheSet(cacheKey, accumulated);
+    persistentCacheSet(cacheKey, accumulated);
 
     yield {
       value: accumulated,
