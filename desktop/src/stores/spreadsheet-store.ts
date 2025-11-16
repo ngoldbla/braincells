@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Dataset, Column, TableView, ColumnType } from '../types/database';
 import * as api from '../lib/tauri-api';
+import { useProviderStore } from './provider-store';
 
 interface SpreadsheetState {
   // Current dataset being viewed/edited
@@ -36,6 +37,7 @@ interface SpreadsheetState {
 
   // Actions - Cell management
   updateCell: (columnId: string, rowIndex: number, value: string) => Promise<void>;
+  generateCells: (columnId: string) => Promise<void>;
 
   // Actions - Import/Export
   importCsv: (csvContent: string) => Promise<void>;
@@ -252,6 +254,48 @@ export const useSpreadsheetStore = create<SpreadsheetState>((set, get) => ({
       set({ error: `Failed to update cell: ${error}` });
       // Refresh to get correct state from backend
       await get().refreshTableView();
+    }
+  },
+
+  generateCells: async (columnId: string) => {
+    try {
+      const { currentDataset, currentTableView } = get();
+      if (!currentDataset) {
+        throw new Error('No dataset selected');
+      }
+
+      // Get the column to verify it's an Output column
+      const column = currentTableView?.columns.find((c) => c.id === columnId);
+      if (!column || column.column_type !== 'output') {
+        throw new Error('Can only generate cells for Output columns');
+      }
+
+      // Get the provider config
+      const providerStore = useProviderStore.getState();
+      const providerConfig = column.provider_id
+        ? providerStore.providers.find((p) => p.id === column.provider_id)
+        : providerStore.getDefaultProvider();
+
+      if (!providerConfig) {
+        throw new Error('No AI provider configured');
+      }
+
+      set({ loading: true, error: null });
+
+      // Call the generation command
+      const progress = await api.generateColumnCells(
+        currentDataset.id,
+        columnId,
+        providerConfig
+      );
+
+      // Refresh table view to show generated cells
+      await get().refreshTableView();
+
+      set({ loading: false });
+    } catch (error) {
+      set({ error: `Failed to generate cells: ${error}`, loading: false });
+      throw error;
     }
   },
 

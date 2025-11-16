@@ -209,3 +209,23 @@ export async function importCsv(
 export async function exportCsv(datasetId: string): Promise<string> {
   return invoke('export_csv', { datasetId });
 }
+
+// Generator Commands
+export interface GenerationProgress {
+  total: number;
+  completed: number;
+  failed: number;
+  current_row: number | null;
+}
+
+export async function generateColumnCells(
+  datasetId: string,
+  columnId: string,
+  providerConfig: ProviderConfig
+): Promise<GenerationProgress> {
+  return invoke('generate_column_cells', {
+    datasetId,
+    columnId,
+    providerConfig,
+  });
+}

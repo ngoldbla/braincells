@@ -67,6 +67,8 @@ pub fn run() {
             // Database commands - Import/Export
             database::import_csv,
             database::export_csv,
+            // Generator commands
+            generator::generate_column_cells,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
