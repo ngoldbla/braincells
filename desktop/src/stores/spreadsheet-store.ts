@@ -283,7 +283,7 @@ export const useSpreadsheetStore = create<SpreadsheetState>((set, get) => ({
       set({ loading: true, error: null });
 
       // Call the generation command
-      const progress = await api.generateColumnCells(
+      await api.generateColumnCells(
         currentDataset.id,
         columnId,
         providerConfig
