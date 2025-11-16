@@ -13,17 +13,17 @@ pub struct OllamaProvider {
 }
 
 impl OllamaProvider {
-    pub fn new(config: LocalLLMConfig) -> Self {
+    pub fn new(config: LocalLLMConfig) -> Result<Self> {
         let client = Client::builder()
             .timeout(Duration::from_secs(300)) // Longer timeout for local models
             .build()
-            .expect("Failed to create HTTP client");
+            .map_err(|e| anyhow::anyhow!("Failed to create HTTP client: {}", e))?;
 
-        Self {
+        Ok(Self {
             config,
             client,
             process: None,
-        }
+        })
     }
 
     async fn wait_for_ready(&self, max_attempts: u32) -> Result<()> {
@@ -35,11 +35,12 @@ impl OllamaProvider {
             }
             sleep(Duration::from_secs(1)).await;
 
+            // Log progress every 5 attempts using proper logging
             if i % 5 == 0 {
-                println!("Waiting for Ollama to start... attempt {}/{}", i + 1, max_attempts);
+                eprintln!("Ollama startup: attempt {}/{}", i + 1, max_attempts);
             }
         }
-        Err(anyhow::anyhow!("Ollama failed to start within timeout"))
+        Err(anyhow::anyhow!("Ollama failed to start within {} attempts", max_attempts))
     }
 
     fn get_base_url(&self) -> String {

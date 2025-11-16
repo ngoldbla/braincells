@@ -2,19 +2,31 @@ import { useState } from 'react';
 import { useSetupStore } from '../../stores/setup-store';
 import { useProviderStore } from '../../stores/provider-store';
 import { testCloudConnection } from '../../lib/tauri-api';
-import { ProviderType, type CloudCredentials } from '../../types/provider';
+import { ProviderType } from '../../types/provider';
 
-const DEFAULT_BASE_URLS = {
+// Type guard to ensure only cloud provider types are used
+type CloudProviderType =
+  | ProviderType.CloudOpenAI
+  | ProviderType.CloudAnthropic
+  | ProviderType.CloudCustom;
+
+const DEFAULT_BASE_URLS: Record<CloudProviderType, string> = {
   [ProviderType.CloudOpenAI]: 'https://api.openai.com/v1',
   [ProviderType.CloudAnthropic]: 'https://api.anthropic.com/v1',
   [ProviderType.CloudCustom]: '',
 };
 
-const DEFAULT_MODELS = {
+const DEFAULT_MODELS: Record<CloudProviderType, string> = {
   [ProviderType.CloudOpenAI]: 'gpt-4',
   [ProviderType.CloudAnthropic]: 'claude-3-5-sonnet-20241022',
   [ProviderType.CloudCustom]: '',
 };
+
+function isCloudProvider(type: ProviderType | null): type is CloudProviderType {
+  return type === ProviderType.CloudOpenAI ||
+         type === ProviderType.CloudAnthropic ||
+         type === ProviderType.CloudCustom;
+}
 
 export function CloudConfigStep() {
   const { selectedProviderType, nextStep, previousStep } = useSetupStore();
@@ -22,10 +34,10 @@ export function CloudConfigStep() {
 
   const [apiKey, setApiKey] = useState('');
   const [baseUrl, setBaseUrl] = useState(
-    selectedProviderType ? DEFAULT_BASE_URLS[selectedProviderType] : ''
+    isCloudProvider(selectedProviderType) ? DEFAULT_BASE_URLS[selectedProviderType] : ''
   );
   const [modelName, setModelName] = useState(
-    selectedProviderType ? DEFAULT_MODELS[selectedProviderType] : ''
+    isCloudProvider(selectedProviderType) ? DEFAULT_MODELS[selectedProviderType] : ''
   );
   const [providerName, setProviderName] = useState('');
   const [testing, setTesting] = useState(false);
@@ -68,7 +80,7 @@ export function CloudConfigStep() {
     if (!selectedProviderType) return;
 
     const provider = {
-      id: crypto.randomUUID(),
+      id: `provider-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       name:
         providerName ||
         `${selectedProviderType.replace('cloud_', '').toUpperCase()} Provider`,

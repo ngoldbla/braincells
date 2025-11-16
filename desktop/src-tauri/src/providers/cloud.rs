@@ -11,21 +11,19 @@ pub struct OpenAIProvider {
 }
 
 impl OpenAIProvider {
-    pub fn new(credentials: CloudCredentials) -> Self {
+    pub fn new(credentials: CloudCredentials) -> Result<Self> {
         let mut headers = header::HeaderMap::new();
-        headers.insert(
-            header::AUTHORIZATION,
-            header::HeaderValue::from_str(&format!("Bearer {}", credentials.api_key))
-                .expect("Invalid API key"),
-        );
+        let auth_value = header::HeaderValue::from_str(&format!("Bearer {}", credentials.api_key))
+            .map_err(|e| anyhow::anyhow!("Invalid API key format: {}", e))?;
+        headers.insert(header::AUTHORIZATION, auth_value);
 
         let client = Client::builder()
             .timeout(Duration::from_secs(120))
             .default_headers(headers)
             .build()
-            .expect("Failed to create HTTP client");
+            .map_err(|e| anyhow::anyhow!("Failed to create HTTP client: {}", e))?;
 
-        Self { credentials, client }
+        Ok(Self { credentials, client })
     }
 }
 
@@ -150,13 +148,11 @@ pub struct AnthropicProvider {
 }
 
 impl AnthropicProvider {
-    pub fn new(credentials: CloudCredentials) -> Self {
+    pub fn new(credentials: CloudCredentials) -> Result<Self> {
         let mut headers = header::HeaderMap::new();
-        headers.insert(
-            "x-api-key",
-            header::HeaderValue::from_str(&credentials.api_key)
-                .expect("Invalid API key"),
-        );
+        let api_key_value = header::HeaderValue::from_str(&credentials.api_key)
+            .map_err(|e| anyhow::anyhow!("Invalid API key format: {}", e))?;
+        headers.insert("x-api-key", api_key_value);
         headers.insert(
             "anthropic-version",
             header::HeaderValue::from_static("2023-06-01"),
@@ -166,9 +162,9 @@ impl AnthropicProvider {
             .timeout(Duration::from_secs(120))
             .default_headers(headers)
             .build()
-            .expect("Failed to create HTTP client");
+            .map_err(|e| anyhow::anyhow!("Failed to create HTTP client: {}", e))?;
 
-        Self { credentials, client }
+        Ok(Self { credentials, client })
     }
 }
 
@@ -282,25 +278,23 @@ pub struct CustomProvider {
 }
 
 impl CustomProvider {
-    pub fn new(credentials: CloudCredentials) -> Self {
+    pub fn new(credentials: CloudCredentials) -> Result<Self> {
         let mut headers = header::HeaderMap::new();
 
         // Only add auth header if API key is provided
         if !credentials.api_key.is_empty() {
-            headers.insert(
-                header::AUTHORIZATION,
-                header::HeaderValue::from_str(&format!("Bearer {}", credentials.api_key))
-                    .expect("Invalid API key"),
-            );
+            let auth_value = header::HeaderValue::from_str(&format!("Bearer {}", credentials.api_key))
+                .map_err(|e| anyhow::anyhow!("Invalid API key format: {}", e))?;
+            headers.insert(header::AUTHORIZATION, auth_value);
         }
 
         let client = Client::builder()
             .timeout(Duration::from_secs(120))
             .default_headers(headers)
             .build()
-            .expect("Failed to create HTTP client");
+            .map_err(|e| anyhow::anyhow!("Failed to create HTTP client: {}", e))?;
 
-        Self { credentials, client }
+        Ok(Self { credentials, client })
     }
 }
 

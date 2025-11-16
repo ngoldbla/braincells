@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useSetupStore } from '../../stores/setup-store';
-import { useProviderStore } from '../../stores/provider-store';
 import { WelcomeStep } from './WelcomeStep';
 import { ProviderSelectionStep } from './ProviderSelectionStep';
 import { CloudConfigStep } from './CloudConfigStep';
@@ -10,7 +8,6 @@ import { ProviderType } from '../../types/provider';
 
 export function SetupWizard() {
   const { currentStep, selectedProviderType, setHasCompletedSetup } = useSetupStore();
-  const { providers } = useProviderStore();
 
   const handleComplete = () => {
     setHasCompletedSetup(true);
