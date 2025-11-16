@@ -42,6 +42,17 @@ Brain Cells supports multiple AI providers:
 
 Configure your preferred provider on first launch.
 
+## For Developers: Creating a Release
+
+To build and publish new executables:
+
+1. **Merge changes** - Merge your PR into the main branch on GitHub
+2. **Create a release** - Go to GitHub → Releases → "Draft a new release"
+3. **Create tag** - Click "Choose a tag" → Type `v0.1.0` (or your version) → "Create new tag on publish"
+4. **Publish** - Click "Publish release"
+
+This automatically triggers the GitHub Actions workflow to build executables for all platforms (Mac, Windows, Linux). The installers will be attached to the release once the build completes.
+
 ## License
 
 MIT License - See [LICENSE](LICENSE)
