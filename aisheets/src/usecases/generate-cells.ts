@@ -38,6 +38,8 @@ export interface GenerateCellsParams {
   stream?: boolean;
   updateOnly?: boolean;
   timeout?: number;
+  resumeFromLast?: boolean; // Resume from the last successfully generated cell
+  streamInBatch?: boolean; // Enable streaming in batch mode for column references
 }
 
 const MAX_CONCURRENCY = appConfig.inference.numConcurrentRequests;
@@ -79,6 +81,8 @@ export const generateCells = async function* ({
   stream = true,
   updateOnly = false,
   timeout,
+  resumeFromLast = false,
+  streamInBatch = false,
 }: GenerateCellsParams) {
   const { columnsReferences } = process;
 
@@ -98,6 +102,20 @@ export const generateCells = async function* ({
 
     limit = Math.max(...columnSizes);
   }
+
+  // Resume from last generated cell if requested
+  if (resumeFromLast && !offset) {
+    // Find the last successfully generated cell (non-validated, non-error)
+    const generatedCells = column.cells
+      .filter((cell) => cell.value && !cell.error && !cell.validated)
+      .sort((a, b) => b.idx - a.idx);
+
+    if (generatedCells.length > 0) {
+      offset = generatedCells[0].idx + 1;
+      console.log(`📍 Resuming from cell index ${offset}`);
+    }
+  }
+
   if (!offset) offset = 0;
 
   try {
@@ -123,6 +141,7 @@ export const generateCells = async function* ({
         updateOnly,
         timeout,
         session,
+        streamInBatch,
       });
     }
   } finally {
@@ -283,6 +302,156 @@ async function* generateCellsFromScratch({
   }
 }
 
+async function* singleCellGenerationStream({
+  cell,
+  column,
+  process,
+  examples,
+  rowIdx,
+  session,
+  timeout,
+}: {
+  cell: Cell;
+  column: Column;
+  process: Process;
+  examples?: Example[];
+  rowIdx: number;
+  session: Session;
+  timeout: number | undefined;
+}): AsyncGenerator<{ cell: Cell }> {
+  const {
+    inference: {
+      tasks: { textGeneration },
+    },
+  } = appConfig;
+
+  const {
+    columnsReferences,
+    modelName,
+    modelProvider,
+    prompt,
+    searchEnabled,
+    useEndpointURL,
+  } = process;
+
+  const rowCells = await getRowCells({
+    rowIdx,
+    columns: columnsReferences,
+  });
+
+  if (rowCells?.filter((cell) => cell.value).length === 0) {
+    cell.generating = false;
+    cell.error = 'No input data found';
+
+    await updateCell(cell);
+
+    yield { cell };
+    return;
+  }
+
+  const data = Object.fromEntries(
+    rowCells.map((cell) => [cell.column!.name, cell.value]),
+  );
+
+  const endpointUrl =
+    useEndpointURL && textGeneration.endpointUrl
+      ? textGeneration.endpointUrl
+      : undefined;
+
+  const args: PromptExecutionParams = {
+    accessToken: session.token,
+    modelName: endpointUrl ? textGeneration.endpointName : modelName,
+    modelProvider,
+    endpointUrl,
+    examples,
+    instruction: prompt,
+    timeout,
+    data,
+    idx: rowIdx,
+  };
+
+  switch (column.type.toLowerCase().trim()) {
+    case 'image': {
+      const response = await _generateImage({
+        column,
+        prompt,
+        args,
+        session,
+      });
+
+      cell.value = response.value;
+      cell.error = response.error;
+      cell.generating = false;
+
+      break;
+    }
+    default: {
+      // Use streaming for text generation
+      let sourcesContext = undefined;
+      if (searchEnabled) {
+        const renderedInstruction = renderInstruction(prompt, data);
+
+        const queries = await buildWebSearchQueries({
+          prompt: renderedInstruction,
+          column,
+          options: {
+            accessToken: session.token,
+          },
+          maxQueries: 1,
+        });
+
+        if (queries.length > 0) {
+          await createSourcesFromWebQueries({
+            dataset: column.dataset,
+            queries,
+            options: {
+              accessToken: session.token,
+            },
+            maxSources: 2,
+          });
+        }
+
+        sourcesContext = await queryDatasetSources({
+          dataset: column.dataset,
+          query: queries[0],
+          options: {
+            accessToken: session.token,
+          },
+          limit: 15,
+        });
+
+        args.sourcesContext = sourcesContext;
+      }
+
+      // Stream the generation
+      for await (const response of runPromptExecutionStream(args)) {
+        cell.value = response.value;
+        cell.error = response.error;
+        if (response.done) {
+          cell.generating = false;
+        }
+        yield { cell };
+      }
+
+      // Extract sources (url + snippet) if available
+      const sources = sourcesContext
+        ? sourcesContext.map((source) => ({
+            url: source.source_uri,
+            snippet: source.text?.slice(0, MAX_SOURCE_SNIPPET_LENGTH) || '',
+          }))
+        : undefined;
+
+      if (cell.value && !cell.error) cell.sources = sources;
+
+      break;
+    }
+  }
+
+  await updateCell(cell);
+
+  yield { cell };
+}
+
 async function singleCellGeneration({
   cell,
   column,
@@ -390,6 +559,75 @@ async function singleCellGeneration({
   return { cell };
 }
 
+async function* cellGenerationInBatchWithStreaming({
+  cells,
+  column,
+  process,
+  examples,
+  session,
+  timeout,
+}: {
+  cells: Cell[];
+  column: Column;
+  process: Process;
+  examples?: Example[];
+  session: Session;
+  timeout: number | undefined;
+}) {
+  for (let i = 0; i < cells.length; i += MAX_CONCURRENCY) {
+    const batch = cells.slice(i, i + MAX_CONCURRENCY);
+
+    // Mark all cells as generating
+    for (const cell of batch) {
+      cell.generating = true;
+      yield { cell };
+    }
+
+    // Create async generators for each cell in the batch
+    const generators = batch.map((cell) => ({
+      cell,
+      generator: singleCellGenerationStream({
+        cell,
+        column,
+        process,
+        examples,
+        rowIdx: cell.idx,
+        session,
+        timeout,
+      }),
+      done: false,
+      lastUpdate: Date.now(),
+    }));
+
+    // Process all generators concurrently
+    while (generators.some((g) => !g.done)) {
+      const updates = await Promise.allSettled(
+        generators
+          .filter((g) => !g.done)
+          .map(async (g) => {
+            const result = await g.generator.next();
+            return { g, result };
+          }),
+      );
+
+      for (const update of updates) {
+        if (update.status === 'fulfilled') {
+          const { g, result } = update.value;
+          if (!result.done) {
+            yield result.value;
+            g.lastUpdate = Date.now();
+          } else {
+            g.done = true;
+            if (result.value) {
+              yield result.value;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 async function* cellGenerationInBatch({
   cells,
   column,
@@ -453,6 +691,7 @@ async function* generateCellsFromColumnsReferences({
   updateOnly,
   timeout,
   session,
+  streamInBatch = false,
 }: {
   column: Column;
   process: Process;
@@ -462,6 +701,7 @@ async function* generateCellsFromColumnsReferences({
   updateOnly: boolean;
   timeout: number | undefined;
   session: Session;
+  streamInBatch?: boolean;
 }) {
   // Set generating state for all cells upfront
   const cellsToGenerate = [];
@@ -485,7 +725,12 @@ async function* generateCellsFromColumnsReferences({
     cellsToGenerate.push(cell);
   }
 
-  for await (const { cell } of cellGenerationInBatch({
+  // Use streaming batch processing if enabled
+  const batchGenerator = streamInBatch
+    ? cellGenerationInBatchWithStreaming
+    : cellGenerationInBatch;
+
+  for await (const { cell } of batchGenerator({
     cells: cellsToGenerate,
     column,
     examples: currentExamples,
