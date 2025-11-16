@@ -16,6 +16,7 @@ export function Toolbar({ onAddColumn, onAddDataset }: ToolbarProps) {
     refreshTableView,
     importCsv,
     exportCsv,
+    generateCells,
   } = useSpreadsheetStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -67,6 +68,29 @@ export function Toolbar({ onAddColumn, onAddDataset }: ToolbarProps) {
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Failed to export CSV:', error);
+    }
+  };
+
+  const handleGenerateAI = async () => {
+    if (!currentTableView) return;
+
+    // Find all Output columns
+    const outputColumns = currentTableView.columns.filter(
+      (col) => col.column_type === 'output'
+    );
+
+    if (outputColumns.length === 0) {
+      alert('No AI Output columns found. Add an Output column first.');
+      return;
+    }
+
+    try {
+      // Generate cells for each Output column
+      for (const column of outputColumns) {
+        await generateCells(column.id);
+      }
+    } catch (error) {
+      console.error('Failed to generate AI cells:', error);
     }
   };
 
@@ -189,6 +213,25 @@ export function Toolbar({ onAddColumn, onAddDataset }: ToolbarProps) {
                 />
               </svg>
               Export CSV
+            </Button>
+
+            <div className="w-px h-6 bg-gray-300 mx-2" />
+
+            <Button variant="primary" size="sm" onClick={handleGenerateAI}>
+              <svg
+                className="w-4 h-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+              Generate AI Cells
             </Button>
           </>
         )}
