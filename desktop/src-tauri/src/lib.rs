@@ -7,6 +7,7 @@ use commands::*;
 use commands::database::DatabaseState;
 use database::Database;
 use std::sync::{Arc, Mutex};
+use tauri::Manager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -18,7 +19,7 @@ pub fn run() {
         .plugin(tauri_plugin_http::init())
         .setup(|app| {
             // Initialize database
-            let app_data_dir = utils::paths::get_app_data_directory()?;
+            let app_data_dir = utils::paths::get_app_data_dir()?;
             let db_path = app_data_dir.join("braincells.db");
 
             let db = Database::new(db_path)

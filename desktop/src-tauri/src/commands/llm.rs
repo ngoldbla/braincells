@@ -15,10 +15,19 @@ pub async fn test_cloud_connection(
         model_name: model,
     };
 
-    let provider = match provider_type {
-        ProviderType::CloudOpenAI => cloud::OpenAIProvider::new(credentials),
-        ProviderType::CloudAnthropic => cloud::AnthropicProvider::new(credentials),
-        ProviderType::CloudCustom => cloud::CustomProvider::new(credentials),
+    let provider: Box<dyn LLMProvider> = match provider_type {
+        ProviderType::CloudOpenAI => {
+            Box::new(cloud::OpenAIProvider::new(credentials)
+                .map_err(|e| e.to_string())?)
+        },
+        ProviderType::CloudAnthropic => {
+            Box::new(cloud::AnthropicProvider::new(credentials)
+                .map_err(|e| e.to_string())?)
+        },
+        ProviderType::CloudCustom => {
+            Box::new(cloud::CustomProvider::new(credentials)
+                .map_err(|e| e.to_string())?)
+        },
         _ => return Err("Invalid cloud provider type".to_string()),
     };
 
@@ -37,7 +46,8 @@ pub async fn check_ollama_status() -> Result<ProviderStatus, String> {
         gpu_enabled: true,
     };
 
-    let provider = ollama::OllamaProvider::new(config);
+    let provider = ollama::OllamaProvider::new(config)
+        .map_err(|e| e.to_string())?;
     provider.check_status()
         .await
         .map_err(|e| e.to_string())
@@ -53,7 +63,8 @@ pub async fn start_ollama(port: Option<u16>, gpu_enabled: Option<bool>) -> Resul
         gpu_enabled: gpu_enabled.unwrap_or(true),
     };
 
-    let mut provider = ollama::OllamaProvider::new(config);
+    let mut provider = ollama::OllamaProvider::new(config)
+        .map_err(|e| e.to_string())?;
     provider.start()
         .await
         .map_err(|e| e.to_string())
@@ -69,7 +80,8 @@ pub async fn pull_ollama_model(model_name: String, port: Option<u16>) -> Result<
         gpu_enabled: true,
     };
 
-    let provider = ollama::OllamaProvider::new(config);
+    let provider = ollama::OllamaProvider::new(config)
+        .map_err(|e| e.to_string())?;
     provider.pull_model(&model_name)
         .await
         .map_err(|e| e.to_string())

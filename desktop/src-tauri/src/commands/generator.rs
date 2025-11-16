@@ -25,38 +25,41 @@ pub async fn generate_column_cells(
     provider_config: ProviderConfig,
     db: State<'_, DatabaseState>,
 ) -> Result<GenerationProgress, String> {
-    let db_lock = db.0.lock()
-        .map_err(|e| format!("Failed to acquire database lock: {}", e))?;
+    // Get initial data in a scoped block to ensure MutexGuard is dropped
+    let (prompt_template, total_rows) = {
+        let db_lock = db.0.lock()
+            .map_err(|e| format!("Failed to acquire database lock: {}", e))?;
 
-    // Get the column
-    let columns = db_lock.list_columns(&dataset_id)
-        .map_err(|e| format!("Failed to list columns: {}", e))?;
+        // Get the column
+        let columns = db_lock.list_columns(&dataset_id)
+            .map_err(|e| format!("Failed to list columns: {}", e))?;
 
-    let column = columns.iter()
-        .find(|c| c.id == column_id)
-        .ok_or_else(|| "Column not found".to_string())?;
+        let column = columns.iter()
+            .find(|c| c.id == column_id)
+            .ok_or_else(|| "Column not found".to_string())?;
 
-    // Verify it's an Output column
-    if column.column_type != ColumnType::Output {
-        return Err("Can only generate cells for Output columns".to_string());
-    }
+        // Verify it's an Output column
+        if column.column_type != ColumnType::Output {
+            return Err("Can only generate cells for Output columns".to_string());
+        }
 
-    let prompt_template = column.prompt.as_ref()
-        .ok_or_else(|| "Output column has no prompt template".to_string())?;
+        let prompt_template = column.prompt.as_ref()
+            .ok_or_else(|| "Output column has no prompt template".to_string())?.clone();
 
-    // Get all rows
-    let total_rows = db_lock.count_rows(&dataset_id)
-        .map_err(|e| format!("Failed to count rows: {}", e))?;
+        // Get all rows
+        let total_rows = db_lock.count_rows(&dataset_id)
+            .map_err(|e| format!("Failed to count rows: {}", e))?;
 
-    if total_rows == 0 {
-        return Err("No rows to generate cells for".to_string());
-    }
+        if total_rows == 0 {
+            return Err("No rows to generate cells for".to_string());
+        }
+
+        (prompt_template, total_rows)
+    }; // db_lock is dropped here
 
     // Create the AI provider
     let provider = create_provider(&provider_config)
         .map_err(|e| format!("Failed to create provider: {}", e))?;
-
-    drop(db_lock); // Release lock before async operations
 
     let mut progress = GenerationProgress {
         total: total_rows as usize,
@@ -70,14 +73,14 @@ pub async fn generate_column_cells(
         progress.current_row = Some(row_index);
 
         // Get the table view for this specific row to access cell values
-        let db_lock = db.0.lock()
-            .map_err(|e| format!("Failed to acquire database lock: {}", e))?;
+        let table_view = {
+            let db_lock = db.0.lock()
+                .map_err(|e| format!("Failed to acquire database lock: {}", e))?;
 
-        let table_view = db_lock.get_table_view(&dataset_id, Some(1), Some(row_index))
-            .map_err(|e| format!("Failed to get table view: {}", e))?
-            .ok_or_else(|| "Failed to get table view".to_string())?;
-
-        drop(db_lock);
+            db_lock.get_table_view(&dataset_id, Some(1), Some(row_index))
+                .map_err(|e| format!("Failed to get table view: {}", e))?
+                .ok_or_else(|| "Failed to get table view".to_string())?
+        }; // db_lock is dropped here
 
         if table_view.rows.is_empty() {
             continue;
@@ -86,20 +89,20 @@ pub async fn generate_column_cells(
         let row = &table_view.rows[0];
 
         // Materialize the prompt by substituting {{Column Name}} with actual values
-        let materialized_prompt = match materialize_prompt(prompt_template, row, &table_view.columns) {
+        let materialized_prompt = match materialize_prompt(&prompt_template, row, &table_view.columns) {
             Ok(p) => p,
             Err(e) => {
-                // Mark cell as error
-                let db_lock = db.0.lock()
-                    .map_err(|e| format!("Failed to acquire database lock: {}", e))?;
+                // Mark cell as error in a scoped block
+                {
+                    let db_lock = db.0.lock()
+                        .map_err(|e| format!("Failed to acquire database lock: {}", e))?;
 
-                let cell = Cell::new(dataset_id.clone(), column_id.clone(), row_index)
-                    .with_error(format!("Failed to materialize prompt: {}", e));
+                    let cell = Cell::new(dataset_id.clone(), column_id.clone(), row_index)
+                        .with_error(format!("Failed to materialize prompt: {}", e));
 
-                db_lock.upsert_cell(&cell)
-                    .map_err(|e| format!("Failed to update cell: {}", e))?;
-
-                drop(db_lock);
+                    db_lock.upsert_cell(&cell)
+                        .map_err(|e| format!("Failed to update cell: {}", e))?;
+                } // db_lock is dropped here
                 progress.failed += 1;
                 continue;
             }
@@ -114,33 +117,33 @@ pub async fn generate_column_cells(
         }).await {
             Ok(response) => response.text,
             Err(e) => {
-                // Mark cell as error
-                let db_lock = db.0.lock()
-                    .map_err(|e| format!("Failed to acquire database lock: {}", e))?;
+                // Mark cell as error in a scoped block
+                {
+                    let db_lock = db.0.lock()
+                        .map_err(|e| format!("Failed to acquire database lock: {}", e))?;
 
-                let cell = Cell::new(dataset_id.clone(), column_id.clone(), row_index)
-                    .with_error(format!("AI generation failed: {}", e));
+                    let cell = Cell::new(dataset_id.clone(), column_id.clone(), row_index)
+                        .with_error(format!("AI generation failed: {}", e));
 
-                db_lock.upsert_cell(&cell)
-                    .map_err(|e| format!("Failed to update cell: {}", e))?;
-
-                drop(db_lock);
+                    db_lock.upsert_cell(&cell)
+                        .map_err(|e| format!("Failed to update cell: {}", e))?;
+                } // db_lock is dropped here
                 progress.failed += 1;
                 continue;
             }
         };
 
-        // Update the cell with the generated value
-        let db_lock = db.0.lock()
-            .map_err(|e| format!("Failed to acquire database lock: {}", e))?;
+        // Update the cell with the generated value in a scoped block
+        {
+            let db_lock = db.0.lock()
+                .map_err(|e| format!("Failed to acquire database lock: {}", e))?;
 
-        let cell = Cell::new(dataset_id.clone(), column_id.clone(), row_index)
-            .with_value(generated_value);
+            let cell = Cell::new(dataset_id.clone(), column_id.clone(), row_index)
+                .with_value(generated_value);
 
-        db_lock.upsert_cell(&cell)
-            .map_err(|e| format!("Failed to update cell: {}", e))?;
-
-        drop(db_lock);
+            db_lock.upsert_cell(&cell)
+                .map_err(|e| format!("Failed to update cell: {}", e))?;
+        } // db_lock is dropped here
         progress.completed += 1;
     }
 
