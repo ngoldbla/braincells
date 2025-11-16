@@ -137,7 +137,11 @@ impl Database {
         let columns = stmt.query_map(params![dataset_id], |row| {
             let column_type_str: String = row.get(3)?;
             let column_type = column_type_str.parse::<ColumnType>()
-                .map_err(|e| duckdb::Error::FromSqlConversionFailure(3, duckdb::types::Type::Text, Box::new(e)))?;
+                .map_err(|e| duckdb::Error::FromSqlConversionFailure(
+                    3,
+                    duckdb::types::Type::Text,
+                    Box::new(std::io::Error::new(std::io::ErrorKind::InvalidData, e.to_string()))
+                ))?;
 
             Ok(Column {
                 id: row.get(0)?,
@@ -208,7 +212,11 @@ impl Database {
         let cells = stmt.query_map(params![column_id], |row| {
             let status_str: String = row.get(5)?;
             let status = status_str.parse::<CellStatus>()
-                .map_err(|e| duckdb::Error::FromSqlConversionFailure(5, duckdb::types::Type::Text, Box::new(e)))?;
+                .map_err(|e| duckdb::Error::FromSqlConversionFailure(
+                    5,
+                    duckdb::types::Type::Text,
+                    Box::new(std::io::Error::new(std::io::ErrorKind::InvalidData, e.to_string()))
+                ))?;
 
             Ok(Cell {
                 id: row.get(0)?,
@@ -251,7 +259,11 @@ impl Database {
         let cells: Vec<Cell> = stmt.query_map(params![dataset_id], |row| {
             let status_str: String = row.get(5)?;
             let status = status_str.parse::<CellStatus>()
-                .map_err(|e| duckdb::Error::FromSqlConversionFailure(5, duckdb::types::Type::Text, Box::new(e)))?;
+                .map_err(|e| duckdb::Error::FromSqlConversionFailure(
+                    5,
+                    duckdb::types::Type::Text,
+                    Box::new(std::io::Error::new(std::io::ErrorKind::InvalidData, e.to_string()))
+                ))?;
 
             Ok(Cell {
                 id: row.get(0)?,
