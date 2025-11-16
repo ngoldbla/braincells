@@ -7,6 +7,12 @@ import type {
   GenerateResponse,
   SystemRequirements,
 } from '../types/provider';
+import type {
+  Dataset,
+  Column,
+  Cell,
+  TableView,
+} from '../types/database';
 
 // LLM Commands
 export async function testCloudConnection(
@@ -109,4 +115,97 @@ export async function installOllama(): Promise<string> {
 
 export async function checkSystemRequirements(): Promise<SystemRequirements> {
   return invoke('check_system_requirements');
+}
+
+// ==================== DATABASE COMMANDS ====================
+
+// Dataset Commands
+export async function createDataset(
+  name: string,
+  description?: string
+): Promise<Dataset> {
+  return invoke('create_dataset', { name, description });
+}
+
+export async function listDatasets(): Promise<Dataset[]> {
+  return invoke('list_datasets');
+}
+
+export async function getDataset(datasetId: string): Promise<Dataset | null> {
+  return invoke('get_dataset', { datasetId });
+}
+
+export async function deleteDataset(datasetId: string): Promise<void> {
+  return invoke('delete_dataset', { datasetId });
+}
+
+// Column Commands
+export async function addColumn(
+  datasetId: string,
+  name: string,
+  columnType: string,
+  prompt?: string,
+  providerId?: string,
+  position?: number
+): Promise<Column> {
+  return invoke('add_column', {
+    datasetId,
+    name,
+    columnType,
+    prompt,
+    providerId,
+    position: position ?? 0,
+  });
+}
+
+export async function listColumns(datasetId: string): Promise<Column[]> {
+  return invoke('list_columns', { datasetId });
+}
+
+export async function deleteColumn(columnId: string): Promise<void> {
+  return invoke('delete_column', { columnId });
+}
+
+// Cell Commands
+export async function updateCell(
+  datasetId: string,
+  columnId: string,
+  rowIndex: number,
+  value?: string
+): Promise<void> {
+  return invoke('update_cell', {
+    datasetId,
+    columnId,
+    rowIndex,
+    value,
+  });
+}
+
+export async function getColumnCells(columnId: string): Promise<Cell[]> {
+  return invoke('get_column_cells', { columnId });
+}
+
+// Table View Commands
+export async function getTableView(
+  datasetId: string,
+  limit?: number,
+  offset?: number
+): Promise<TableView | null> {
+  return invoke('get_table_view', { datasetId, limit, offset });
+}
+
+export async function countRows(datasetId: string): Promise<number> {
+  return invoke('count_rows', { datasetId });
+}
+
+// Import/Export Commands
+export async function importCsv(
+  datasetId: string,
+  csvContent: string
+): Promise<void> {
+  return invoke('import_csv', { datasetId, csvContent });
+}
+
+export async function exportCsv(datasetId: string): Promise<string> {
+  return invoke('export_csv', { datasetId });
 }
