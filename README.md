@@ -15,12 +15,32 @@
 
 ## 🎯 What is Brain Cells?
 
-**Brain Cells** brings the power of AI to spreadsheets, running entirely on your local machine. Built on top of Hugging Face's open-source AI Sheets technology and powered by Ollama for local LLM inference, Brain Cells transforms every cell in your spreadsheet into an intelligent processor capable of:
+**Brain Cells** brings the power of AI to spreadsheets, running entirely on your local machine. Available as both a web application and native desktop app, Brain Cells transforms every cell in your spreadsheet into an intelligent processor capable of:
 
 - 🤖 **AI-Powered Data Generation** - Generate data using natural language prompts
 - 🔄 **Smart Data Transformation** - Clean, enrich, and transform your data with AI
 - 🔒 **Complete Privacy** - Your data never leaves your machine
-- ⚡ **Multiple AI Providers** - Use Hugging Face, OpenAI, Anthropic, or run completely offline
+- ⚡ **Multiple AI Providers** - Use OpenAI, Anthropic, Ollama, vLLM, or run completely offline
+- 🖥️ **Native Desktop App** - Cross-platform Tauri application (Windows, macOS, Linux)
+
+---
+
+## 🆕 Two Versions Available
+
+### 1️⃣ **Web Application** (Docker-based)
+- ✅ **Production-ready** with full spreadsheet functionality
+- ✅ Quick setup with Docker Compose
+- ✅ Complete feature set (see below)
+- 📍 Best for: Users comfortable with Docker, server deployments
+
+### 2️⃣ **Desktop Application** (Native Tauri)
+- ✅ **Foundation complete** with multi-provider LLM support
+- ⚙️ Spreadsheet UI migration in progress
+- ✅ Native performance, smaller footprint
+- ✅ No Docker required
+- 📍 Best for: Users wanting native desktop experience
+
+> **Status**: The desktop app foundation is production-ready with comprehensive LLM provider support (OpenAI, Anthropic, Ollama, and vLLM structure). Spreadsheet UI migration from web app is in progress. See [ROBUSTNESS_ROADMAP.md](ROBUSTNESS_ROADMAP.md) for details.
 
 ---
 
@@ -355,9 +375,18 @@ Brain Cells is built on top of:
 
 ---
 
+## 📖 Documentation
+
+- **[ROBUSTNESS_ROADMAP.md](ROBUSTNESS_ROADMAP.md)** - Comprehensive plan for production-ready desktop app
+- **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Current implementation status
+- **[desktop/README.md](desktop/README.md)** - Desktop app user guide
+- **[desktop/ARCHITECTURE.md](desktop/ARCHITECTURE.md)** - Technical architecture
+- **[desktop/MIGRATION_GUIDE.md](desktop/MIGRATION_GUIDE.md)** - Migration roadmap
+
 ## 🔗 Links
 
 - **GitHub**: [github.com/ngoldbla/braincells](https://github.com/ngoldbla/braincells)
+- **Issues**: [github.com/ngoldbla/braincells/issues](https://github.com/ngoldbla/braincells/issues)
 
 ---
 
