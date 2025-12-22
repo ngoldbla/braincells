@@ -173,6 +173,9 @@ echo      docker system prune -a
 echo.
 echo Starting services with docker compose...
 echo.
+if exist docker-compose.yml (
+    docker compose up -d --build
+    )
 
 REM Check if docker-compose.yml exists
 if not exist docker-compose.yml (
@@ -190,7 +193,6 @@ if not exist docker-compose.yml (
     exit /b 1
 )
 
-docker compose up -d --build
 
 if !errorlevel! neq 0 (
     echo.
