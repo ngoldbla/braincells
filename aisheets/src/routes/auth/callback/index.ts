@@ -1,54 +1,20 @@
-import type { RequestEvent } from '@builder.io/qwik-city';
-import * as hub from '@huggingface/hub';
-import { saveSession } from '~/services/auth/session';
+import type { RequestHandler } from '@builder.io/qwik-city';
+import { createSupabaseServerClient } from '~/services/supabase/server';
 
-export const onGet = async (event: RequestEvent) => {
-  const { cookie, redirect, query, url } = event;
+export const onGet: RequestHandler = async (event) => {
+  const { url, redirect } = event;
+  const code = url.searchParams.get('code');
+  const next = url.searchParams.get('next') ?? '/home';
 
-  const code = query.get('code');
-  const stateParam = query.get('state');
+  if (code) {
+    const supabase = createSupabaseServerClient(event);
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
 
-  if (!code || !stateParam) {
-    throw redirect(303, '/');
+    if (!error) {
+      throw redirect(302, next);
+    }
   }
 
-  const { state: sessionCode, nonce: nonceFromCallback } =
-    JSON.parse(stateParam);
-
-  if (!cookie.has(sessionCode)) {
-    throw redirect(303, '/');
-  }
-
-  const data = cookie.get(sessionCode)!;
-  const { codeVerifier, nonce } = data.json<any>();
-
-  if (nonce !== nonceFromCallback) {
-    throw redirect(303, '/');
-  }
-
-  try {
-    cookie.delete(sessionCode);
-
-    const auth = await hub.oauthHandleRedirect({
-      codeVerifier,
-      nonce,
-      redirectedUrl: url.href,
-    });
-
-    const session = {
-      anonymous: false,
-      token: auth.accessToken,
-      user: {
-        name: auth.userInfo.name,
-        username: auth.userInfo.preferred_username,
-        picture: auth.userInfo.picture,
-      },
-    };
-
-    saveSession(event, session);
-  } catch (e) {
-    console.error(e);
-  }
-
-  throw redirect(308, '/');
+  // If there's no code or an error, redirect to login
+  throw redirect(302, '/auth/login');
 };

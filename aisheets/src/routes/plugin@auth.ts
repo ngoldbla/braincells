@@ -1,23 +1,36 @@
 import type { RequestEvent } from '@builder.io/qwik-city';
-import { saveAnonymousSession } from '~/services/auth/session';
+import { createSupabaseServerClient } from '~/services/supabase/server';
 
 export const onRequest = async (event: RequestEvent) => {
-  const { sharedMap, cookie } = event;
+  const { sharedMap, redirect, pathname } = event;
 
-  const session = cookie.get('session');
-  const anonymous = cookie.get('anonymous');
+  const supabase = createSupabaseServerClient(event);
 
-  if (session) {
-    sharedMap.set('session', session.json());
+  // Get the current user
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-    return;
+  // Store supabase client and user in sharedMap for use in routes
+  sharedMap.set('supabase', supabase);
+  sharedMap.set('user', user);
+
+  // Define protected routes that require authentication
+  const protectedRoutes = ['/home'];
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    pathname.startsWith(route),
+  );
+
+  // Redirect to login if accessing protected route without authentication
+  if (isProtectedRoute && !user) {
+    throw redirect(302, '/auth/login');
   }
 
-  if (anonymous) {
-    sharedMap.set('anonymous', anonymous.json());
+  // Redirect to home if already authenticated and trying to access auth pages
+  const authRoutes = ['/auth/login', '/auth/signup'];
+  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
 
-    return;
+  if (isAuthRoute && user) {
+    throw redirect(302, '/home');
   }
-
-  await saveAnonymousSession(event);
 };

@@ -1,26 +1,34 @@
 import { isBrowser } from '@builder.io/qwik';
 import type { RequestEventBase } from '@builder.io/qwik-city';
+import type { User } from '@supabase/supabase-js';
 
-export interface Session {
-  anonymous: boolean;
-  token: string;
-  user: {
-    name: string;
-    username: string;
-    picture: string;
-  };
-}
+export type { User };
 
-export const useServerSession = ({
+/**
+ * Get the current user from the server request event.
+ * Returns null if not authenticated.
+ */
+export const useServerUser = ({
   sharedMap,
-}: RequestEventBase<QwikCityPlatform>): Session => {
+}: RequestEventBase<QwikCityPlatform>): User | null => {
   if (isBrowser) {
-    throw new Error('useServerSession must be used on the server.');
+    throw new Error('useServerUser must be used on the server.');
   }
 
-  const session = sharedMap.get('session') ?? sharedMap.get('anonymous');
+  return sharedMap.get('user') ?? null;
+};
 
-  if (!session) throw new Error('Session not found.');
+/**
+ * Require authentication - throws if user is not authenticated.
+ */
+export const requireServerUser = ({
+  sharedMap,
+}: RequestEventBase<QwikCityPlatform>): User => {
+  const user = useServerUser({ sharedMap } as RequestEventBase<QwikCityPlatform>);
 
-  return session;
+  if (!user) {
+    throw new Error('User not authenticated');
+  }
+
+  return user;
 };
