@@ -1,12 +1,13 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
-import type { RequestEvent } from '@builder.io/qwik-city';
+import type { RequestEventBase } from '@builder.io/qwik-city';
 import type { Database } from '~/types/supabase';
 
 /**
  * Creates a Supabase client for server-side use in Qwik.
  * This client handles cookie-based session management.
+ * Works with RequestEvent, RequestEventAction, and RequestEventLoader.
  */
-export const createSupabaseServerClient = (event: RequestEvent) => {
+export const createSupabaseServerClient = (event: RequestEventBase<QwikCityPlatform>) => {
   const supabaseUrl = process.env.PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY;
 
@@ -42,21 +43,10 @@ export const createSupabaseServerClient = (event: RequestEvent) => {
  * Get the current user from the request event.
  * Returns null if not authenticated.
  */
-export const getUser = async (event: RequestEvent) => {
+export const getUser = async (event: RequestEventBase<QwikCityPlatform>) => {
   const supabase = createSupabaseServerClient(event);
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  return user;
-};
-
-/**
- * Require authentication - throws redirect if not authenticated.
- */
-export const requireAuth = async (event: RequestEvent) => {
-  const user = await getUser(event);
-  if (!user) {
-    throw event.redirect(302, '/auth/login');
-  }
   return user;
 };

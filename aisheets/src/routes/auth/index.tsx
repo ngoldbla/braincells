@@ -71,9 +71,9 @@ const handleHFTokenLogin = async (event: RequestEvent) => {
       anonymous: false,
       token: hfToken!,
       user: {
-        name: userInfo.fullname,
+        id: userInfo.id || userInfo.name,
         username: userInfo.name,
-        picture: userInfo.avatarUrl,
+        email: userInfo.email,
       },
     };
 
