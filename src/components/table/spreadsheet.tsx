@@ -72,13 +72,19 @@ export function Spreadsheet({
       const supabase = createClient();
       const columnIds = columns.map((c) => c.id);
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('cell_values')
         .select('*')
         .eq('dataset_id', dataset.id)
         .in('column_id', columnIds)
         .order('row_idx', { ascending: true })
         .limit(1000);
+
+      if (error) {
+        toast.error(error.message || 'Failed to load cell data');
+        setInitialLoad(false);
+        return;
+      }
 
       if (data) {
         // Group by column

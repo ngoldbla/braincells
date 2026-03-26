@@ -10,7 +10,7 @@ export async function getDatasetColumns(
     .select(
       `
       *,
-      processes (*)
+      processes!processes_column_id_fkey (*)
     `,
     )
     .eq('dataset_id', datasetId)

@@ -54,6 +54,17 @@ export async function POST(request: NextRequest) {
   } = body;
 
   const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return new Response(
+      JSON.stringify({ error: 'Unauthorized' }),
+      { status: 401 },
+    );
+  }
+
   const openai = createOpenAIClient(apiKey);
 
   const encoder = new TextEncoder();

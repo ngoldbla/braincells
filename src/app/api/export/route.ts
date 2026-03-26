@@ -4,6 +4,14 @@ import Papa from 'papaparse';
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { searchParams } = new URL(request.url);
   const datasetId = searchParams.get('dataset_id');
   const format = searchParams.get('format') || 'csv';
@@ -22,7 +30,9 @@ export async function GET(request: NextRequest) {
     .eq('dataset_id', datasetId)
     .order('position', { ascending: true });
 
-  if (colError) throw colError;
+  if (colError) {
+    return NextResponse.json({ error: colError.message }, { status: 500 });
+  }
   if (!columns || columns.length === 0) {
     return NextResponse.json({ error: 'No columns found' }, { status: 404 });
   }
@@ -34,7 +44,9 @@ export async function GET(request: NextRequest) {
     .eq('dataset_id', datasetId)
     .order('row_idx', { ascending: true });
 
-  if (cellError) throw cellError;
+  if (cellError) {
+    return NextResponse.json({ error: cellError.message }, { status: 500 });
+  }
 
   // Build row map
   const columnMap = new Map(columns.map((c) => [c.id, c.name]));

@@ -93,10 +93,10 @@ export default function SettingsPage() {
       <Card className="border-zinc-800 bg-zinc-900">
         <CardHeader>
           <CardTitle className="text-lg text-zinc-100">
-            About AI Sheets
+            About braincells
           </CardTitle>
           <CardDescription className="text-zinc-500">
-            AI Sheets is a spreadsheet where columns can be AI-generated.
+            braincells is a spreadsheet where columns can be AI-generated.
             Reference data between columns using {'{{column_name}}'} syntax
             in your prompts to create powerful data pipelines.
           </CardDescription>

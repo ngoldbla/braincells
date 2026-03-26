@@ -47,7 +47,7 @@ export default function LoginPage() {
     <Card className="border-zinc-800 bg-zinc-900">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold text-zinc-100">
-          AI Sheets
+          braincells
         </CardTitle>
         <CardDescription className="text-zinc-400">
           Sign in to your account

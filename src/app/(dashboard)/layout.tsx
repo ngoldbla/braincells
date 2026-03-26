@@ -25,7 +25,7 @@ export default async function DashboardLayout({
             href="/"
             className="font-mono text-sm font-bold tracking-tight text-zinc-100"
           >
-            AI Sheets
+            braincells
           </Link>
           <div className="flex items-center gap-4">
             <Link

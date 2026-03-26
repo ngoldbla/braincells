@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
+import { toast } from 'sonner';
 import type { Dataset } from '@/lib/types/domain';
 
 export function CreateDatasetDialog({
@@ -34,13 +35,25 @@ export function CreateDatasetDialog({
       data: { user },
     } = await supabase.auth.getUser();
 
+    if (!user) {
+      toast.error('You must be logged in to create a dataset');
+      setLoading(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from('datasets')
-      .insert({ name: name.trim(), user_id: user!.id })
+      .insert({ name: name.trim(), user_id: user.id })
       .select()
       .single();
 
-    if (!error && data) {
+    if (error) {
+      toast.error(error.message || 'Failed to create dataset');
+      setLoading(false);
+      return;
+    }
+
+    if (data) {
       onCreated(data);
       setName('');
       onOpenChange(false);

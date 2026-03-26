@@ -20,6 +20,7 @@ import {
 import { CreateDatasetDialog } from './create-dialog';
 import { ImportDialog } from './import-dialog';
 import { AutoDatasetWizard } from './autodataset-wizard';
+import { toast } from 'sonner';
 import type { Dataset } from '@/lib/types/domain';
 
 export function DatasetList({
@@ -35,7 +36,11 @@ export function DatasetList({
 
   const handleDelete = async (id: string) => {
     const supabase = createClient();
-    await supabase.from('datasets').delete().eq('id', id);
+    const { error } = await supabase.from('datasets').delete().eq('id', id);
+    if (error) {
+      toast.error(error.message || 'Failed to delete dataset');
+      return;
+    }
     setDatasets((prev) => prev.filter((d) => d.id !== id));
   };
 
@@ -79,15 +84,11 @@ export function DatasetList({
                   </CardDescription>
                 </div>
                 <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-zinc-500"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      ···
-                    </Button>
+                  <DropdownMenuTrigger
+                    className="inline-flex h-8 items-center justify-center rounded-md px-2 text-sm text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    ···
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem

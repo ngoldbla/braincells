@@ -32,11 +32,25 @@ export async function POST(request: NextRequest) {
   let rows: Record<string, any>[];
 
   if (fileType === 'json') {
-    const parsed = JSON.parse(text);
-    rows = Array.isArray(parsed) ? parsed : [parsed];
+    try {
+      const parsed = JSON.parse(text);
+      rows = Array.isArray(parsed) ? parsed : [parsed];
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid JSON file' },
+        { status: 400 },
+      );
+    }
   } else {
-    const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
-    rows = parsed.data as Record<string, any>[];
+    try {
+      const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
+      rows = parsed.data as Record<string, any>[];
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid CSV file' },
+        { status: 400 },
+      );
+    }
   }
 
   // Limit rows

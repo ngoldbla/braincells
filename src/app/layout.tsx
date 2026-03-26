@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Sheets",
+  title: "braincells",
   description: "A spreadsheet where columns can be AI-generated",
 };
 

@@ -81,7 +81,7 @@ export function ImportDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(v) => { if (v) setError(''); onOpenChange(v); }}>
       <DialogContent className="border-zinc-800 bg-zinc-900">
         <DialogHeader>
           <DialogTitle className="text-zinc-100">
