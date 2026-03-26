@@ -193,13 +193,15 @@ export function ProcessForm({
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let completedCount = 0;
+      let buffer = '';
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const text = decoder.decode(value);
-        const lines = text.split('\n');
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
 
         for (const line of lines) {
           if (!line.startsWith('data: ')) continue;
@@ -224,7 +226,8 @@ export function ProcessForm({
                 validated: false,
                 sources: data.sources,
               });
-              if (data.row_idx >= rowCount) {
+              const currentRowCount = useDatasetStore.getState().rowCount;
+              if (data.row_idx >= currentRowCount) {
                 setRowCount(data.row_idx + 1);
               }
             }
