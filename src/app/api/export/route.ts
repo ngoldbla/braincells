@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Build row map
-  const columnMap = new Map(columns.map((c) => [c.id, c.name]));
+  const columnMap = new Map<string, string>(columns.map((c: any) => [c.id, c.name]));
   const rowMap = new Map<number, Record<string, any>>();
 
   for (const cell of cells || []) {
@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
   }
 
   const csv = Papa.unparse(rows, {
-    columns: columns.map((c) => c.name),
+    columns: columns.map((c: any) => c.name),
   });
 
   return new Response(csv, {
