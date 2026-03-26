@@ -35,6 +35,11 @@ export function Spreadsheet({
 
   useRealtimeCells(dataset.id);
 
+  // Reset cell loading when navigating to a different dataset
+  useEffect(() => {
+    setInitialLoad(true);
+  }, [dataset.id]);
+
   // Initialize store
   useEffect(() => {
     setActiveDataset(dataset);
@@ -170,7 +175,7 @@ export function Spreadsheet({
       {/* Main content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Table */}
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-hidden">
           <div className="min-w-max">
             <TableHeader
               columns={columns}

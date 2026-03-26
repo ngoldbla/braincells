@@ -11,6 +11,7 @@ export async function generateImage(
       prompt,
       n: 1,
       size: '1024x1024',
+      response_format: 'b64_json',
     });
 
     const imageUrl = response.data?.[0]?.url;

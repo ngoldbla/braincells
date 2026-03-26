@@ -4,7 +4,6 @@ import { useUIStore } from '@/lib/store/ui-store';
 import { useDatasetStore } from '@/lib/store/dataset-store';
 import { createClient } from '@/lib/supabase/client';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -80,14 +79,8 @@ export function TableHeader({
           </button>
 
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-6 w-6 p-0 text-zinc-600 hover:text-zinc-300"
-              >
-                ⋮
-              </Button>
+            <DropdownMenuTrigger className="inline-flex h-6 w-6 items-center justify-center rounded-md text-zinc-600 hover:bg-zinc-800 hover:text-zinc-300">
+              ⋮
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem

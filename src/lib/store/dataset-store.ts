@@ -64,7 +64,7 @@ export const useDatasetStore = create<DatasetState>((set) => ({
         );
         const newCells =
           existing >= 0
-            ? col.cells.map((c) => (c.row_idx === cell.row_idx ? cell : c))
+            ? col.cells.map((c) => (c.row_idx === cell.row_idx ? { ...c, ...cell } : c))
             : [...col.cells, cell].sort((a, b) => a.row_idx - b.row_idx);
         return { ...col, cells: newCells };
       }),
