@@ -17,15 +17,20 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
-import type { Column, TaskType } from '@/lib/types/domain';
+import type { Column, TaskType, Provider } from '@/lib/types/domain';
 
 const MODELS = [
-  { value: 'gpt-4o-mini', label: 'GPT-4o Mini' },
-  { value: 'gpt-4o', label: 'GPT-4o' },
-  { value: 'gpt-4.1', label: 'GPT-4.1' },
-  { value: 'gpt-4.1-mini', label: 'GPT-4.1 Mini' },
-  { value: 'gpt-image-1', label: 'GPT Image 1' },
-  { value: 'o4-mini', label: 'o4-mini' },
+  // OpenAI
+  { value: 'gpt-4o-mini', label: 'GPT-4o Mini', provider: 'openai' as const },
+  { value: 'gpt-4o', label: 'GPT-4o', provider: 'openai' as const },
+  { value: 'gpt-4.1', label: 'GPT-4.1', provider: 'openai' as const },
+  { value: 'gpt-4.1-mini', label: 'GPT-4.1 Mini', provider: 'openai' as const },
+  { value: 'gpt-image-1', label: 'GPT Image 1', provider: 'openai' as const },
+  { value: 'o4-mini', label: 'o4-mini', provider: 'openai' as const },
+  // Mercury (Inception Labs)
+  { value: 'mercury-2', label: 'Mercury 2', provider: 'mercury' as const },
+  { value: 'mercury-coder', label: 'Mercury Coder', provider: 'mercury' as const },
+  { value: 'mercury-edit', label: 'Mercury Edit', provider: 'mercury' as const },
 ];
 
 const TASKS: { value: TaskType; label: string }[] = [
@@ -36,18 +41,28 @@ const TASKS: { value: TaskType; label: string }[] = [
   { value: 'transcription', label: 'Transcription' },
 ];
 
+// Tasks that Mercury does not support (text-only model)
+const MERCURY_UNSUPPORTED_TASKS: TaskType[] = [
+  'text-to-image',
+  'image-text-to-text',
+  'speech',
+  'transcription',
+];
+
 export function ProcessForm({
   column,
   columns,
   datasetId,
   apiKey,
+  provider,
 }: {
   column: Column;
   columns: Column[];
   datasetId: string;
   apiKey: string;
+  provider: Provider;
 }) {
-  const { updateColumnProcess, updateCell, setRowCount, rowCount } =
+  const { updateColumnProcess, updateCell, setRowCount } =
     useDatasetStore();
   const { setSelectedColumnId, setIsGenerating, setGeneratingColumnId } =
     useUIStore();
@@ -65,6 +80,27 @@ export function ProcessForm({
   );
   const [generating, setGenerating] = useState(false);
   const [rowLimit, setRowLimit] = useState(5);
+
+  const availableModels = MODELS.filter((m) => m.provider === provider);
+
+  // When provider changes, reset model to a valid one for that provider
+  useEffect(() => {
+    const modelBelongsToProvider = availableModels.some((m) => m.value === model);
+    if (!modelBelongsToProvider) {
+      setModel(availableModels[0]?.value || 'gpt-4o-mini');
+    }
+  }, [provider]);
+
+  // When provider is mercury and task is unsupported, reset to text-generation
+  useEffect(() => {
+    if (provider === 'mercury' && MERCURY_UNSUPPORTED_TASKS.includes(task)) {
+      setTask('text-generation');
+    }
+    // Disable web search for mercury (uses OpenAI Responses API)
+    if (provider === 'mercury' && searchEnabled) {
+      setSearchEnabled(false);
+    }
+  }, [provider]);
 
   useEffect(() => {
     setPrompt(column.process?.prompt || '');
@@ -141,7 +177,7 @@ export function ProcessForm({
 
   const handleGenerate = async () => {
     if (!apiKey) {
-      toast.error('Set your OpenAI API key in Settings');
+      toast.error('Set your API key in Settings');
       return;
     }
 
@@ -165,7 +201,8 @@ export function ProcessForm({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-openai-api-key': apiKey,
+          'x-api-key': apiKey,
+          'x-ai-provider': provider,
         },
         body: JSON.stringify({
           dataset_id: datasetId,
@@ -259,6 +296,7 @@ export function ProcessForm({
   );
   const needsImageColumn =
     task === 'image-text-to-text' || task === 'transcription';
+  const isMercury = provider === 'mercury';
 
   return (
     <div className="p-4 space-y-5">
@@ -285,18 +323,26 @@ export function ProcessForm({
           onValueChange={(v) => {
             setTask(v as TaskType);
             if (v === 'text-to-image') setModel('gpt-image-1');
-            else if (model === 'gpt-image-1') setModel('gpt-4o-mini');
+            else if (model === 'gpt-image-1') setModel(availableModels[0]?.value || 'gpt-4o-mini');
           }}
         >
           <SelectTrigger className="border-zinc-700 bg-zinc-800 text-zinc-100 text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {TASKS.map((t) => (
-              <SelectItem key={t.value} value={t.value}>
-                {t.label}
-              </SelectItem>
-            ))}
+            {TASKS.map((t) => {
+              const disabled = isMercury && MERCURY_UNSUPPORTED_TASKS.includes(t.value);
+              return (
+                <SelectItem
+                  key={t.value}
+                  value={t.value}
+                  disabled={disabled}
+                >
+                  {t.label}
+                  {disabled && ' (OpenAI only)'}
+                </SelectItem>
+              );
+            })}
           </SelectContent>
         </Select>
       </div>
@@ -308,7 +354,7 @@ export function ProcessForm({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {MODELS.map((m) => (
+            {availableModels.map((m) => (
               <SelectItem key={m.value} value={m.value}>
                 {m.label}
               </SelectItem>
@@ -368,7 +414,7 @@ export function ProcessForm({
         </div>
       )}
 
-      {task === 'text-generation' && (
+      {task === 'text-generation' && !isMercury && (
         <div className="flex items-center gap-2">
           <Checkbox
             id="search"

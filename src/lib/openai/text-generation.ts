@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import type { ChatCompletionCreateParamsNonStreaming, ChatCompletionCreateParamsStreaming } from 'openai/resources/chat/completions';
 
 export async function generateText(
   client: OpenAI,
@@ -6,10 +7,12 @@ export async function generateText(
   model = 'gpt-4o-mini',
 ): Promise<{ value?: string; error?: string }> {
   try {
-    const response = await client.chat.completions.create({
+    const params: ChatCompletionCreateParamsNonStreaming = {
       model,
       messages: [{ role: 'user', content: prompt }],
-    });
+      ...(model.startsWith('mercury') && { realtime: true } as any),
+    };
+    const response = await client.chat.completions.create(params);
 
     const content = response.choices[0]?.message?.content;
     return { value: content || '' };
@@ -24,11 +27,13 @@ export async function* streamText(
   prompt: string,
   model = 'gpt-4o-mini',
 ): AsyncGenerator<{ value: string; done: boolean }> {
-  const stream = await client.chat.completions.create({
+  const params: ChatCompletionCreateParamsStreaming = {
     model,
     messages: [{ role: 'user', content: prompt }],
     stream: true,
-  });
+    ...(model.startsWith('mercury') && { realtime: true } as any),
+  };
+  const stream = await client.chat.completions.create(params);
 
   let accumulated = '';
   for await (const chunk of stream) {

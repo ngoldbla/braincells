@@ -33,7 +33,7 @@ export function AutoDatasetWizard({
   const [running, setRunning] = useState(false);
   const [steps, setSteps] = useState<WizardStep[]>([]);
   const [error, setError] = useState('');
-  const { apiKey, hasKey } = useOpenAIKey();
+  const { apiKey, hasKey, provider } = useOpenAIKey();
 
   const handleRun = async () => {
     if (!instruction.trim() || !hasKey) return;
@@ -48,7 +48,8 @@ export function AutoDatasetWizard({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-openai-api-key': apiKey,
+          'x-api-key': apiKey,
+          'x-ai-provider': provider,
         },
         body: JSON.stringify({
           instruction: instruction.trim(),
