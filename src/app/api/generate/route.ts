@@ -14,8 +14,8 @@ import {
 } from '@/lib/utils/prompt-template';
 import { upsertCellValue, getRowCells } from '@/lib/supabase/queries/cells';
 import { upsertCellMeta } from '@/lib/supabase/queries/cell-meta';
-import type { TaskType } from '@/lib/types/domain';
-import { MAX_CONCURRENCY } from '@/lib/types/domain';
+import type { TaskType, Provider } from '@/lib/types/domain';
+import { MAX_CONCURRENCY, MERCURY_BASE_URL } from '@/lib/types/domain';
 
 export const maxDuration = 300;
 
@@ -36,13 +36,15 @@ interface GenerateRequest {
 }
 
 export async function POST(request: NextRequest) {
-  const apiKey = request.headers.get('x-openai-api-key');
+  const apiKey = request.headers.get('x-api-key') || request.headers.get('x-openai-api-key');
   if (!apiKey) {
     return new Response(
-      JSON.stringify({ error: 'Missing OpenAI API key' }),
+      JSON.stringify({ error: 'Missing API key' }),
       { status: 401 },
     );
   }
+  const provider = (request.headers.get('x-ai-provider') || 'openai') as Provider;
+  const baseURL = provider === 'mercury' ? MERCURY_BASE_URL : undefined;
 
   const body: GenerateRequest = await request.json();
   const {
@@ -65,7 +67,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const openai = createOpenAIClient(apiKey);
+  const openai = createOpenAIClient(apiKey, baseURL);
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream({

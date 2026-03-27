@@ -30,7 +30,7 @@ export function Spreadsheet({
     mergeCells,
   } = useDatasetStore();
   const { sidebarOpen, selectedColumnId } = useUIStore();
-  const { apiKey, hasKey } = useOpenAIKey();
+  const { apiKey, hasKey, provider } = useOpenAIKey();
   const [initialLoad, setInitialLoad] = useState(true);
 
   useRealtimeCells(dataset.id);
@@ -198,6 +198,7 @@ export function Spreadsheet({
               columns={columns}
               datasetId={dataset.id}
               apiKey={apiKey}
+              provider={provider}
             />
           </div>
         )}

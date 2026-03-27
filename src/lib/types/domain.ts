@@ -64,6 +64,10 @@ export interface AutoDatasetConfig {
   text: string;
 }
 
+export type Provider = 'openai' | 'mercury';
+
+export const MERCURY_BASE_URL = 'https://api.inceptionlabs.ai/v1';
+
 export const DEFAULT_MODEL = 'gpt-4o-mini';
 export const MAX_CONCURRENCY = 5;
 export const EXAMPLES_PROMPT_MAX_CONTEXT_SIZE = 8192;

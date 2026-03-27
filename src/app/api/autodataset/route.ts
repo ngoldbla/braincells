@@ -11,18 +11,20 @@ import { extractColumnReferences } from '@/lib/utils/prompt-template';
 import { createColumn, getMaxPosition } from '@/lib/supabase/queries/columns';
 import { createDataset } from '@/lib/supabase/queries/datasets';
 import { upsertProcess } from '@/lib/supabase/queries/processes';
-import { DEFAULT_MODEL } from '@/lib/types/domain';
-import type { TaskType } from '@/lib/types/domain';
+import { DEFAULT_MODEL, MERCURY_BASE_URL } from '@/lib/types/domain';
+import type { TaskType, Provider } from '@/lib/types/domain';
 
 export const maxDuration = 300;
 
 export async function POST(request: NextRequest) {
-  const apiKey = request.headers.get('x-openai-api-key');
+  const apiKey = request.headers.get('x-api-key') || request.headers.get('x-openai-api-key');
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: 'Missing OpenAI API key' }), {
+    return new Response(JSON.stringify({ error: 'Missing API key' }), {
       status: 401,
     });
   }
+  const provider = (request.headers.get('x-ai-provider') || 'openai') as Provider;
+  const baseURL = provider === 'mercury' ? MERCURY_BASE_URL : undefined;
 
   const {
     instruction,
@@ -31,7 +33,7 @@ export async function POST(request: NextRequest) {
   } = await request.json();
 
   const supabase = await createClient();
-  const openai = createOpenAIClient(apiKey);
+  const openai = createOpenAIClient(apiKey, baseURL);
 
   const {
     data: { user },
@@ -180,7 +182,8 @@ export async function POST(request: NextRequest) {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'x-openai-api-key': apiKey,
+              'x-api-key': apiKey,
+              'x-ai-provider': provider,
               Cookie: request.headers.get('cookie') || '',
             },
             body: JSON.stringify({
