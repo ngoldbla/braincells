@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { AddColumnButton } from './add-column-button';
 import type { Column } from '@/lib/types/domain';
 
 export function TableHeader({
@@ -98,6 +99,11 @@ export function TableHeader({
           </DropdownMenu>
         </div>
       ))}
+
+      {/* Add column button — always visible in header row */}
+      <div className="flex shrink-0 items-center border-r border-zinc-800 bg-zinc-950">
+        <AddColumnButton datasetId={datasetId} />
+      </div>
     </div>
   );
 }
