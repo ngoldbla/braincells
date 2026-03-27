@@ -38,12 +38,11 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Redirect unauthenticated users to login (except auth pages and API routes)
-  const isAuthPage =
-    request.nextUrl.pathname.startsWith('/login') ||
-    request.nextUrl.pathname.startsWith('/signup');
+  const isAuthPage = request.nextUrl.pathname.startsWith('/login');
+  const isAuthCallback = request.nextUrl.pathname.startsWith('/auth/callback');
   const isApiRoute = request.nextUrl.pathname.startsWith('/api');
 
-  if (!user && !isAuthPage && !isApiRoute) {
+  if (!user && !isAuthPage && !isAuthCallback && !isApiRoute) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
