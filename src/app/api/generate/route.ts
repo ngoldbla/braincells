@@ -67,6 +67,16 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  console.log('[generate] request', {
+    dataset_id,
+    column_id,
+    task: proc.task,
+    model: proc.model,
+    refs: proc.columns_references?.length ?? 0,
+    offset,
+    limit,
+  });
+
   const openai = createOpenAIClient(apiKey, baseURL);
 
   const encoder = new TextEncoder();
@@ -118,12 +128,15 @@ export async function POST(request: NextRequest) {
 
                 // Save the result
                 if (result.value !== undefined) {
+                  console.log('[generate] cell success', { row: rowIdx, valueLen: String(result.value).length });
                   await upsertCellValue(supabase, {
                     dataset_id,
                     column_id,
                     row_idx: rowIdx,
                     value: result.value,
                   });
+                } else if (result.error) {
+                  console.warn('[generate] cell error', { row: rowIdx, error: result.error });
                 }
 
                 await upsertCellMeta(supabase, {
@@ -202,15 +215,37 @@ async function generateSingleCell({
   if (hasRefs) {
     const rowCells = await getRowCells(
       supabase,
+      dataset_id,
       rowIdx,
       proc.columns_references!,
     );
+
+    console.log('[generate] getRowCells', {
+      row: rowIdx,
+      cellsReturned: rowCells?.length ?? 0,
+    });
 
     if (rowCells && rowCells.length > 0) {
       data = Object.fromEntries(
         rowCells.map((cell: any) => [cell.columns?.name || cell.column_id, cell.value]),
       );
     }
+
+    // Validate that all referenced template variables have data
+    const refRegex = /\{\{([^}]+)\}\}/g;
+    let refMatch: RegExpExecArray | null;
+    const expectedVars: string[] = [];
+    while ((refMatch = refRegex.exec(proc.prompt)) !== null) {
+      expectedVars.push(refMatch[1].trim());
+    }
+    const missingVars = expectedVars.filter((v) => !(v in data) || data[v] == null || data[v] === '');
+    if (missingVars.length > 0) {
+      const msg = `Missing data for column(s) '${missingVars.join("', '")}' at row ${rowIdx}. Populate the referenced column(s) first.`;
+      console.warn('[generate]', msg);
+      return { error: msg };
+    }
+
+    console.log('[generate] data context', { row: rowIdx, columns: Object.keys(data) });
   }
 
   switch (proc.task) {
@@ -226,7 +261,7 @@ async function generateSingleCell({
       if (!proc.image_column_id) {
         return { error: 'No image column configured for vision task' };
       }
-      const imageCells = await getRowCells(supabase, rowIdx, [
+      const imageCells = await getRowCells(supabase, dataset_id, rowIdx, [
         proc.image_column_id,
       ]);
       const imageUrl = imageCells?.[0]?.value;
@@ -257,7 +292,7 @@ async function generateSingleCell({
       if (!proc.image_column_id) {
         return { error: 'No audio column configured for transcription' };
       }
-      const audioCells = await getRowCells(supabase, rowIdx, [
+      const audioCells = await getRowCells(supabase, dataset_id, rowIdx, [
         proc.image_column_id,
       ]);
       const audioData = audioCells?.[0]?.value;

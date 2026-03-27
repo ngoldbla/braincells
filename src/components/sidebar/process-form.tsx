@@ -143,7 +143,7 @@ export function ProcessForm({
 
     if (error) {
       toast.error('Failed to save process config');
-      return;
+      return false;
     }
 
     if (data) {
@@ -173,6 +173,7 @@ export function ProcessForm({
     });
 
     toast.success('Process saved');
+    return true;
   };
 
   const handleGenerate = async () => {
@@ -181,7 +182,8 @@ export function ProcessForm({
       return;
     }
 
-    await handleSave();
+    const saved = await handleSave();
+    if (!saved) return;
 
     setGenerating(true);
     setIsGenerating(true);
@@ -194,6 +196,19 @@ export function ProcessForm({
       const refName = m[1].trim();
       const refCol = columns.find((c) => c.name === refName);
       if (refCol) refs.push(refCol.id);
+    }
+
+    // Warn if referenced columns appear to have no data
+    if (refs.length > 0) {
+      const storeState = useDatasetStore.getState();
+      for (const refId of refs) {
+        const refCol = columns.find((c) => c.id === refId);
+        const refCells = storeState.cells[refId];
+        const hasCells = refCells && Object.keys(refCells).length > 0;
+        if (!hasCells && refCol) {
+          toast.warning(`Column '${refCol.name}' has no data. Results may be incomplete.`);
+        }
+      }
     }
 
     try {
@@ -272,13 +287,17 @@ export function ProcessForm({
             if (data.event === 'generation.error') {
               toast.error(data.error);
             }
-          } catch {
-            // skip malformed SSE
+          } catch (parseErr) {
+            console.warn('[generate] malformed SSE line:', line, parseErr);
           }
         }
       }
 
-      toast.success('Generated ' + completedCount + ' cells');
+      if (completedCount === 0) {
+        toast.warning('No cells were generated. Check that referenced columns have data.');
+      } else {
+        toast.success('Generated ' + completedCount + ' cells');
+      }
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : 'Generation failed',

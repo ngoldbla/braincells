@@ -94,6 +94,7 @@ export async function getRowCount(
 
 export async function getRowCells(
   supabase: SupabaseClient,
+  datasetId: string,
   rowIdx: number,
   columnIds: string[],
 ) {
@@ -102,6 +103,7 @@ export async function getRowCells(
   const { data, error } = await supabase
     .from('cell_values')
     .select('*, columns!inner(name)')
+    .eq('dataset_id', datasetId)
     .in('column_id', columnIds)
     .eq('row_idx', rowIdx);
 
