@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { toast } from 'sonner';
 import type { ColumnKind } from '@/lib/types/domain';
 
 export function AddColumnButton({ datasetId }: { datasetId: string }) {
@@ -50,7 +51,13 @@ export function AddColumnButton({ datasetId }: { datasetId: string }) {
       .select()
       .single();
 
-    if (!error && data) {
+    if (error) {
+      toast.error(error.message || 'Failed to add column');
+      setLoading(false);
+      return;
+    }
+
+    if (data) {
       addColumn({
         id: data.id,
         dataset_id: data.dataset_id,

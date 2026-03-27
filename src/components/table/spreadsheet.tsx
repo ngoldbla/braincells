@@ -9,7 +9,6 @@ import { createClient } from '@/lib/supabase/client';
 import { TableHeader } from './table-header';
 import { TableBody } from './table-body';
 import { ProcessForm } from '@/components/sidebar/process-form';
-import { AddColumnButton } from './add-column-button';
 import type { Dataset, Column, Cell } from '@/lib/types/domain';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -186,7 +185,6 @@ export function Spreadsheet({
               rowCount={rowCount}
               datasetId={dataset.id}
             />
-            <AddColumnButton datasetId={dataset.id} />
           </div>
         </div>
 
