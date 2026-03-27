@@ -20,6 +20,7 @@ interface DatasetState {
   updateCell: (columnId: string, cell: Cell) => void;
   setCellsForColumn: (columnId: string, cells: Cell[]) => void;
   mergeCells: (columnId: string, cells: Cell[]) => void;
+  clearRow: (rowIdx: number) => void;
 }
 
 export const useDatasetStore = create<DatasetState>((set) => ({
@@ -92,5 +93,13 @@ export const useDatasetStore = create<DatasetState>((set) => ({
           ),
         };
       }),
+    })),
+
+  clearRow: (rowIdx) =>
+    set((state) => ({
+      columns: state.columns.map((col) => ({
+        ...col,
+        cells: col.cells.filter((c) => c.row_idx !== rowIdx),
+      })),
     })),
 }));
